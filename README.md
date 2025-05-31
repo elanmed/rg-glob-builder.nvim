@@ -1,9 +1,11 @@
 # rg-glob-builder.nvim
 
-A neovim plugin to generate intuitive `rg` glob patterns for searches.
+A neovim plugin to generate intuitive glob patterns for searching with `rg`.
 
 ```lua 
-require "rg-glob-builder".build { prompt = "~require~ -e rb md !lua -d plugins !feature_* -f !*.test.* *_spec.rb", }
+require "rg-glob-builder".build { 
+  prompt = "~require~ -e rb md !lua -d plugins !feature_* -f !*.test.* *_spec.rb", 
+}
 ```
 
 generates:
@@ -55,11 +57,6 @@ require "rg-glob-builder".setup {
 ```
 
 ## TODO
-- [x] Accept options for search delimeters
-- [x] Accept options for user defined flags
-- [x] Accept option for trailing space
-- [x] Unit tests for `build`
-- [x] Unit tests for config options
 - [ ] Adapter for fzf-lua
 - [ ] Adapter for telescope
 - [ ] Adapter for snacks
