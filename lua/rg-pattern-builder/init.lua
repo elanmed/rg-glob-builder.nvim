@@ -123,10 +123,6 @@ M.build = function(prompt)
   }
 
   local cmd = vim.iter {
-    "rg",
-    "--line-number", "--column", "--no-heading", -- formatting for fzf-lua
-    "--hidden",
-    "--color=always",
     flags.case_flag, flags.word_flag,
     parsed_search.search,
     include_flag, negate_flag,
