@@ -1,0 +1,26 @@
+*rg-pattern-builder.txt*                              Last change: 2025 May 30
+
+==============================================================================
+Table of Contents                       *rg-pattern-builder-table-of-contents*
+
+TODO ............................................... |rg-pattern-builder-todo|
+
+==============================================================================
+RG-PATTERN-BUILDER                     *rg-pattern-builder-rg-pattern-builder*
+
+
+WIP
+
+
+------------------------------------------------------------------------------
+TODO                                                 *rg-pattern-builder-todo*
+
+
+- [ ] Accept options for search delimeters
+- [ ] Accept options for user defined flags
+- [ ] Unit tests for `build`
+- [ ] Adapter for fzf-lua
+- [ ] Adapter for telescope
+- [ ] Adapter for snacks
+
+vim:tw=78:ts=8:ft=help:norl:
