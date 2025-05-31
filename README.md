@@ -15,9 +15,9 @@ generates:
 By using two glob flags, the generated `rg` command reads like the following:
 
 Search for `require` in: 
-- (files that end in `_spec.rb` OR `.rb` OR `.md` OR are within the `plugins` directory) 
-- AND 
-- (files that don't end in `*.test.*` OR `.lua` OR are not within a directory beginning with `feature_`)
+    (files that end in `_spec.rb` OR `.rb` OR `.md` OR are within the `plugins` directory) 
+    AND 
+    (files that don't end in `*.test.*` OR `.lua` OR are not within a directory beginning with `feature_`)
 
 This AND/OR structure matches the VSCode global search and replace interface, which I find to be the most intuitive.
 
@@ -59,7 +59,7 @@ require "rg-glob-builder".setup {
 - [x] Accept options for user defined flags
 - [x] Accept option for trailing space
 - [x] Unit tests for `build`
-- [ ] Unit tests for config options
+- [x] Unit tests for config options
 - [ ] Adapter for fzf-lua
 - [ ] Adapter for telescope
 - [ ] Adapter for snacks
