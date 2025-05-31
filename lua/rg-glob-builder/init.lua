@@ -37,7 +37,7 @@ local opts_schema = {
 --- @class RgPatternBuilderSetupOptsCustomFlags
 --- @field extension? string The flag to include or negate an extension to the glob pattern. Extensions are prefixed internally with "*.". Defaults to "-e"
 --- @field file? string The flag to include or negate a file to the glob pattern. Files are passed without modification to the glob. Defaults to "-f"
---- @field directory? string The flag to include or negate a directory to the glob pattern. Extensions are updated internally with "**/[directory]/**". Defaults to "-d"
+--- @field directory? string The flag to include or negate a directory to the glob pattern. Extensions are updated internally to "**/[directory]/**". Defaults to "-d"
 --- @field case_sensitive? string The flag to search case sensitively, adds the `--case-sensitive` flag. Defaults to "-c"
 --- @field ignore_case? string The flag to search case insensitively, adds the `--case-ignore` flag. Defaults to "-nc"
 --- @field whole_word? string The flag to search case by whole word, adds the `--word-regexp` flag. Defaults to "-w"

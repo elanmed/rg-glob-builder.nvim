@@ -7,7 +7,7 @@
 require "rg-glob-builder".setup {
   custom_flags = {
     -- The flag to include or negate a directory to the glob pattern. Extensions are 
-    -- updated internally with "**/[directory]/**"
+    -- updated internally to "**/[directory]/**"
     directory = "-d",
     -- The flag to include or negate an extension to the glob pattern. Extensions are 
     -- prefixed internally with "*."
