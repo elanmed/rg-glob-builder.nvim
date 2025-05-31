@@ -1,134 +1,72 @@
 local helpers = require "rg-pattern-builder.helpers"
+local builder = require "rg-pattern-builder.builder"
+local validate = require "rg-pattern-builder.validator".validate
 
 local M = {}
 
---- @param opts { flag_val: string, include_tbl: table, negate_tbl: table }
-local function record_flag(opts)
-  if opts.flag_val:sub(1, 1) == "!" then
-    if #opts.flag_val > 1 then
-      table.insert(opts.negate_tbl, opts.flag_val:sub(2))
-    end
-  else
-    table.insert(opts.include_tbl, opts.flag_val)
-  end
-end
+--- @type Schema
+local opts_schema = {
+  type = "table",
+  optional = true,
+  entries = {
+    pattern_delimeter = {
+      type = function(val)
+        return type(val) == "string" and #val == 1
+      end,
+      optional = true,
+    },
+    custom_flags = {
+      extension = { type = "string", optional = true, },
+      file = { type = "string", optional = true, },
+      directory = { type = "string", optional = true, },
+      case_sensitive = { type = "string", optional = true, },
+      ignore_case = { type = "string", optional = true, },
+      whole_word = { type = "string", optional = true, },
+      partial_word = { type = "string", optional = true, },
+    },
+    nil_unless_trailing_space = { type = "boolean", optional = true, },
+  },
+}
 
---- @param opts { dir_tbl: table, file_tbl: table, ext_tbl: table, negate: boolean }
-local function construct_rg_flags(opts)
-  local ext_tbl_processed = vim.tbl_map(function(ext)
-    return "*." .. ext
-  end, opts.ext_tbl)
+--- @class RgPatternBuilderSetupOptsCustomFlags
+--- @field extension? string
+--- @field file? string
+--- @field directory? string
+--- @field case_sensitive? string
+--- @field ignore_case? string
+--- @field whole_word? string
+--- @field partial_word? string
 
-  local dir_tbl_processed = vim.tbl_map(function(dir)
-    return string.format("**/%s/**", dir)
-  end, opts.dir_tbl)
+--- @class RgPatternBuilderSetupOpts
+--- @field pattern_delimeter? string
+--- @field custom_flags? RgPatternBuilderSetupOptsCustomFlags
+--- @field nil_unless_trailing_space? boolean
 
-  local file_ext_dir_tbl = vim.iter { opts.file_tbl, ext_tbl_processed, dir_tbl_processed, }
-      :flatten()
-      :totable()
 
-  if vim.tbl_count(file_ext_dir_tbl) > 0 then
-    local flag = string.format("'{%s}'", table.concat(file_ext_dir_tbl, ","))
+local setup_opts = nil
 
-    if opts.negate then
-      flag = "!" .. flag
-    end
-
-    return "-g " .. flag
-  end
-
-  return nil
-end
-
---- @param prompt string
-local function parse_search(prompt)
-  local end_tilde_index = prompt:find("~", 2)
-  local end_index = end_tilde_index or (#prompt + 1)
-  local search = prompt:sub(2, end_index - 1)
-  return { search = ("'%s'"):format(search), search_end_index = end_index, }
-end
-
---- @param tokens table
-local function parse_flags(tokens)
-  local state = nil
-  local parsed = {
-    include_file = {},
-    negate_file = {},
-    include_dir = {},
-    negate_dir = {},
-    include_ext = {},
-    negate_ext = {},
-    case_flag = { "--ignore-case", },
-    word_flag = { nil, },
-  }
-
-  for _, token in ipairs(tokens) do
-    if token == "-c" then
-      parsed.case_flag = { "--case-sensitive", }
-      state = nil
-    elseif token == "-nc" then
-      parsed.case_flag = { "--ignore-case", }
-      state = nil
-    elseif token == "-w" then
-      parsed.word_flag = { "--word-regexp", }
-      state = nil
-    elseif token == "-nw" then
-      parsed.word_flag = { nil, }
-      state = nil
-    elseif token == "-f" then
-      state = "file"
-    elseif token == "-d" then
-      state = "dir"
-    elseif token == "-e" then
-      state = "ext"
-    elseif state then
-      record_flag {
-        flag_val = token,
-        include_tbl = parsed["include_" .. state],
-        negate_tbl = parsed["negate_" .. state],
-      }
-    end
+--- @param opts RgPatternBuilderSetupOpts
+M.setup = function(opts)
+  if not validate(opts_schema, opts) then
+    error(string.format("Expected opts of type: %s, received %s", vim.inspect(opts_schema), vim.inspect(opts)))
   end
 
-  return parsed
+  setup_opts = opts
 end
 
-M.build = function(prompt)
-  if not prompt or prompt == "" then
-    return nil
+--- @param opts RgPatternBuilderBuildOpts
+M.build = function(opts)
+  opts = helpers.default(opts, {})
+  if not validate({ type = "string", }, opts.prompt) then
+    error "opts.prompt is required!"
   end
 
-  local parsed_search = parse_search(prompt)
-
-  local flags_prompt = prompt:sub(parsed_search.search_end_index + 1)
-  -- if flags_prompt:sub(-1) ~= " " then
-  --   return nil
-  -- end
-
-  local tokens = helpers.split(flags_prompt)
-  local flags = parse_flags(tokens)
-
-  local include_flag = construct_rg_flags {
-    negate = false,
-    dir_tbl = flags.include_dir,
-    file_tbl = flags.include_file,
-    ext_tbl = flags.include_ext,
-  }
-
-  local negate_flag = construct_rg_flags {
-    negate = true,
-    dir_tbl = flags.negate_dir,
-    file_tbl = flags.negate_file,
-    ext_tbl = flags.negate_ext,
-  }
-
-  local cmd = vim.iter {
-    flags.case_flag, flags.word_flag,
-    parsed_search.search,
-    include_flag, negate_flag,
-  }:flatten():totable()
-
-  return table.concat(cmd, " ")
+  local merged_opts = vim.tbl_deep_extend(
+    "force",
+    helpers.default(setup_opts, {}),
+    opts
+  )
+  return builder.build(merged_opts)
 end
 
 return M
