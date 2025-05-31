@@ -1,4 +1,25 @@
-# rg-glob-builder
+# rg-glob-builder.nvim
+
+A neovim plugin to generate intuitive `rg` glob patterns for searches.
+
+```lua 
+require "rg-glob-builder".build { prompt = "~require~ -e rb md !lua -d plugins !feature_* -f !*.test.* *_spec.rb", }
+```
+
+generates:
+
+```bash
+--ignore-case 'require' -g '{*_spec.rb,*.rb,*.md,**/plugins/**}' -g !'{*.test.*,*.lua,**/feature_*/**}'
+```
+
+By using two glob flags, the generated `rg` command reads like the following:
+
+Search for `require` in: 
+- (files that end in `_spec.rb` OR `.rb` OR `.md` OR are within the `plugins` directory) 
+- AND 
+- (files that don't end in `*.test.*` OR `.lua` OR are not within a directory beginning with `feature_`)
+
+This AND/OR structure matches the VSCode global search and replace interface, which I find to be the most intuitive.
 
 ## Setup
 
