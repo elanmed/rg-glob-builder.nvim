@@ -1,4 +1,3 @@
-local rg_glob_builder = require "rg-glob-builder.init"
 local expect = MiniTest.expect
 local child = MiniTest.new_child_neovim()
 
@@ -67,6 +66,24 @@ T["build"]["setup opts"]["directory"] = function()
     [[--ignore-case 'require' -g '{**/plugins/**}' -g !'{**/feature_*/**}']]
   )
 end
+T["build"]["setup opts"]["pattern_delimeter"] = function()
+  child.lua [[ M.setup { pattern_delimeter = "_", } ]]
+  expect.equality(
+    child.lua [[ return M.build { prompt = "_require_", }]],
+    [[--ignore-case 'require']]
+  )
+end
+T["build"]["setup opts"]["nil_unless_trailing_space"] = function()
+  child.lua [[ M.setup { nil_unless_trailing_space = true, } ]]
+  expect.equality(
+    child.lua [[ return M.build { prompt = "~require~", }]],
+    vim.NIL
+  )
+  expect.equality(
+    child.lua [[ return M.build { prompt = "~require~ ", }]],
+    [[--ignore-case 'require']]
+  )
+end
 
 T["build"]["local opts"] = MiniTest.new_set()
 T["build"]["local opts"]["case"] = function()
@@ -115,6 +132,22 @@ T["build"]["local opts"]["directory"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ --dir plugins !feature_*", custom_flags = { directory = "--dir", }, }]],
     [[--ignore-case 'require' -g '{**/plugins/**}' -g !'{**/feature_*/**}']]
+  )
+end
+T["build"]["local opts"]["pattern_delimeter"] = function()
+  expect.equality(
+    child.lua [[ return M.build { prompt = "_require_", pattern_delimeter = "_", }]],
+    [[--ignore-case 'require']]
+  )
+end
+T["build"]["local opts"]["nil_unless_trailing_space"] = function()
+  expect.equality(
+    child.lua [[ return M.build { prompt = "~require~", nil_unless_trailing_space = true, }]],
+    vim.NIL
+  )
+  expect.equality(
+    child.lua [[ return M.build { prompt = "~require~ ", }]],
+    [[--ignore-case 'require']]
   )
 end
 
@@ -169,6 +202,24 @@ T["build"]["local opts overriding setup opts"]["directory"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ --dir plugins !feature_*", custom_flags = { directory = "--dir", }, }]],
     [[--ignore-case 'require' -g '{**/plugins/**}' -g !'{**/feature_*/**}']]
+  )
+end
+T["build"]["local opts overriding setup opts"]["pattern_delimeter"] = function()
+  child.lua [[ M.setup { pattern_delimeter = "-", } ]]
+  expect.equality(
+    child.lua [[ return M.build { prompt = "_require_", pattern_delimeter = "_", }]],
+    [[--ignore-case 'require']]
+  )
+end
+T["build"]["local opts overriding setup opts"]["nil_unless_trailing_space"] = function()
+  child.lua [[ M.setup { nil_unless_trailing_space = false, } ]]
+  expect.equality(
+    child.lua [[ return M.build { prompt = "~require~", nil_unless_trailing_space = true, }]],
+    vim.NIL
+  )
+  expect.equality(
+    child.lua [[ return M.build { prompt = "~require~ ", }]],
+    [[--ignore-case 'require']]
   )
 end
 
@@ -333,11 +384,11 @@ T["build"]["default opts"]["directory"]["should include and exclude dirs"] = fun
   )
 end
 
--- T["kitchen sink"] = function()
---   expect.equality(
---     rg_glob_builder.build { prompt = "~require~ -e rb md !lua -d plugins !feature_* -f !*.test.* *_spec.rb", },
---     [[--ignore-case 'require' -g '{*_spec.rb,*.rb,*.md,**/plugins/**}' -g !'{*.test.*,*.lua,**/feature_*/**}']]
---   )
--- end
+T["kitchen sink"] = function()
+  expect.equality(
+    child.lua [[ return M.build { prompt = "~require~ -e rb md !lua -d plugins !feature_* -f !*.test.* *_spec.rb", }]],
+    [[--ignore-case 'require' -g '{*_spec.rb,*.rb,*.md,**/plugins/**}' -g !'{*.test.*,*.lua,**/feature_*/**}']]
+  )
+end
 
 return T
