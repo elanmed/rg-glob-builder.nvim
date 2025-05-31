@@ -1,7 +1,3 @@
-local helpers = require "rg-glob-builder.helpers"
-local builder = require "rg-glob-builder.builder"
-local validate = require "rg-glob-builder.validator".validate
-
 local M = {}
 
 --- @type Schema
@@ -51,6 +47,7 @@ local setup_opts = nil
 
 --- @param opts RgPatternBuilderSetupOpts
 M.setup = function(opts)
+  local validate = require "rg-glob-builder.validator".validate
   if not validate(opts_schema, opts) then
     error(
       string.format(
@@ -66,6 +63,10 @@ end
 
 --- @param opts RgPatternBuilderBuildOpts
 M.build = function(opts)
+  local validate = require "rg-glob-builder.validator".validate
+  local helpers = require "rg-glob-builder.helpers"
+  local builder = require "rg-glob-builder.builder"
+
   opts = helpers.default(opts, {})
   if not validate({ type = "string", }, opts.prompt) then
     error "opts.prompt is required!"
@@ -77,6 +78,10 @@ M.build = function(opts)
     opts
   )
   return builder.build(merged_opts)
+end
+
+M.fzf_lua_adapter = function(opts)
+  return require "rg-glob-builder.fzf-lua-adapter".fzf_lua_adapter(opts)
 end
 
 return M
