@@ -2,15 +2,14 @@ local helpers = require "rg-pattern-builder.helpers"
 
 local M = {}
 
---- @param opts { str: string, include_tbl: table, negate_tbl: table }
-local function record_custom_flag(opts)
-  local str, include_tbl, negate_tbl = opts.str, opts.include_tbl, opts.negate_tbl
-  if str:sub(1, 1) == "!" then
-    if #str > 1 then
-      table.insert(negate_tbl, str:sub(2))
+--- @param opts { flag_val: string, include_tbl: table, negate_tbl: table }
+local function record_flag(opts)
+  if opts.flag_val:sub(1, 1) == "!" then
+    if #opts.flag_val > 1 then
+      table.insert(opts.negate_tbl, opts.flag_val:sub(2))
     end
   else
-    table.insert(include_tbl, str)
+    table.insert(opts.include_tbl, opts.flag_val)
   end
 end
 
@@ -83,12 +82,10 @@ local function parse_flags(tokens)
     elseif token == "-e" then
       state = "ext"
     elseif state then
-      local include_key = "include_" .. state
-      local negate_key = "negate_" .. state
-      record_custom_flag {
-        str = token,
-        include_tbl = parsed[include_key],
-        negate_tbl = parsed[negate_key],
+      record_flag {
+        flag_val = token,
+        include_tbl = parsed["include_" .. state],
+        negate_tbl = parsed["negate" .. state],
       }
     end
   end
