@@ -1,4 +1,4 @@
-local helpers = require "rg-pattern-builder.helpers"
+local helpers = require "rg-glob-builder.helpers"
 
 local M = {}
 

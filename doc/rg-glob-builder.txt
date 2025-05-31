@@ -1,19 +1,19 @@
-*rg-pattern-builder.txt*                              Last change: 2025 May 30
+*rg-glob-builder.txt*                                 Last change: 2025 May 31
 
 ==============================================================================
-Table of Contents                       *rg-pattern-builder-table-of-contents*
+Table of Contents                          *rg-glob-builder-table-of-contents*
 
-TODO ............................................... |rg-pattern-builder-todo|
+TODO .................................................. |rg-glob-builder-todo|
 
 ==============================================================================
-RG-PATTERN-BUILDER                     *rg-pattern-builder-rg-pattern-builder*
+RG-GLOB-BUILDER                              *rg-glob-builder-rg-glob-builder*
 
 
 WIP
 
 
 ------------------------------------------------------------------------------
-TODO                                                 *rg-pattern-builder-todo*
+TODO                                                    *rg-glob-builder-todo*
 
 
 - [x] Accept options for search delimeters

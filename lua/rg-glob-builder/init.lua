@@ -1,6 +1,6 @@
-local helpers = require "rg-pattern-builder.helpers"
-local builder = require "rg-pattern-builder.builder"
-local validate = require "rg-pattern-builder.validator".validate
+local helpers = require "rg-glob-builder.helpers"
+local builder = require "rg-glob-builder.builder"
+local validate = require "rg-glob-builder.validator".validate
 
 local M = {}
 

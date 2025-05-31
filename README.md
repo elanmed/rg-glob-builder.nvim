@@ -1,4 +1,4 @@
-# rg-pattern-builder
+# rg-glob-builder
 
 WIP
 
