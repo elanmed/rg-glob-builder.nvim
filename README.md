@@ -6,11 +6,14 @@
 -- Default options, `setup` can be called as `.setup()` to enable the following options
 require "rg-glob-builder".setup {
   custom_flags = {
-    -- The flag to include or negate a directory to the glob pattern. Extensions are updated internally with "**/[directory]/**"
+    -- The flag to include or negate a directory to the glob pattern. Extensions are 
+    -- updated internally with "**/[directory]/**"
     directory = "-d",
-    -- The flag to include or negate an extension to the glob pattern. Extensions are prefixed internally with "*."
+    -- The flag to include or negate an extension to the glob pattern. Extensions are 
+    -- prefixed internally with "*."
     extension = "-e",
-    -- The flag to include or negate a file to the glob pattern. Files are passed without modification to the glob
+    -- The flag to include or negate a file to the glob pattern. Files are passed without 
+    -- modification to the glob
     file = "-f",
     -- The flag to search case sensitively, adds the `--case-sensitive` flag
     case_sensitive = "-c",
@@ -18,13 +21,14 @@ require "rg-glob-builder".setup {
     ignore_case = "-nc",
     -- The flag to search case by whole word, adds the `--word-regexp` flag
     whole_word = "-w",
-    -- The flag to search case by partial word, removes the `--word-regexp` flag (searching by partial word is the default behavior in rg)
+    -- The flag to search case by partial word, removes the `--word-regexp` flag 
+    -- Searching by partial word is the default behavior in rg
     partial_word = "-nw",
   },
-  -- Return `nil` unless the final character is a trailing space. When updating the flags, this option 
-  -- will maintain the current search results until the update is complete. Defaults to `false`
+  -- Return `nil` unless the final character is a trailing space. When updating the flags, 
+  -- this option will maintain the current search results until the update is complete
   nil_unless_trailing_space = false,
-  -- The single-char string to act as the delimeter for the pattern to pass to rg. Defaults to "~"
+  -- The single-char string to act as the delimeter for the pattern to pass to rg
   pattern_delimeter = "~",
 }
 ```
