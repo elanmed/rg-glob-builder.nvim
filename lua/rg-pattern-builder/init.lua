@@ -37,7 +37,7 @@ local function construct_rg_flags(opts)
     return "-g " .. flag
   end
 
-  return ""
+  return nil
 end
 
 --- @param prompt string
@@ -85,7 +85,7 @@ local function parse_flags(tokens)
       record_flag {
         flag_val = token,
         include_tbl = parsed["include_" .. state],
-        negate_tbl = parsed["negate" .. state],
+        negate_tbl = parsed["negate_" .. state],
       }
     end
   end
@@ -101,9 +101,9 @@ M.build = function(prompt)
   local parsed_search = parse_search(prompt)
 
   local flags_prompt = prompt:sub(parsed_search.search_end_index + 1)
-  if flags_prompt:sub(-1) ~= " " then
-    return nil
-  end
+  -- if flags_prompt:sub(-1) ~= " " then
+  --   return nil
+  -- end
 
   local tokens = helpers.split(flags_prompt)
   local flags = parse_flags(tokens)
