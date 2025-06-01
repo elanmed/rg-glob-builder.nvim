@@ -144,11 +144,15 @@ end
 
 --- @param opts RgGlobBuilderBuildOpts
 M.build = function(opts)
-  if not opts.prompt or opts.prompt == "" then
+  if opts.prompt == nil or opts.prompt == "" then
     return nil
   end
 
-  local parsed_search = parse_search { prompt = opts.prompt, pattern_delimeter = opts.pattern_delimeter, auto_quote = opts.auto_quote, }
+  local parsed_search = parse_search {
+    prompt = opts.prompt,
+    pattern_delimeter = opts.pattern_delimeter,
+    auto_quote = opts.auto_quote,
+  }
 
   local flags_prompt = opts.prompt:sub(parsed_search.search_end_index + 1)
   local nil_unless_trailing_space = helpers.default(opts.nil_unless_trailing_space, false)
