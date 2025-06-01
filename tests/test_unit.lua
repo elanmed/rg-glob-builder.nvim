@@ -84,6 +84,13 @@ T["build"]["setup opts"]["nil_unless_trailing_space"] = function()
     [[--ignore-case 'require']]
   )
 end
+T["build"]["setup opts"]["auto quote"] = function()
+  child.lua [[ M.setup { auto_quote = false, } ]]
+  expect.equality(
+    child.lua [[ return M.build { prompt = "~require~ -e lua !rb", }]],
+    [[--ignore-case require -g {*.lua} -g !{*.rb}]]
+  )
+end
 
 T["build"]["local opts"] = MiniTest.new_set()
 T["build"]["local opts"]["case"] = function()
@@ -148,6 +155,12 @@ T["build"]["local opts"]["nil_unless_trailing_space"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ ", }]],
     [[--ignore-case 'require']]
+  )
+end
+T["build"]["local opts"]["auto quote"] = function()
+  expect.equality(
+    child.lua [[ return M.build { prompt = "~require~ -e lua !rb", auto_quote = false }]],
+    [[--ignore-case require -g {*.lua} -g !{*.rb}]]
   )
 end
 
@@ -220,6 +233,13 @@ T["build"]["local opts overriding setup opts"]["nil_unless_trailing_space"] = fu
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ ", }]],
     [[--ignore-case 'require']]
+  )
+end
+T["build"]["local opts overriding setup opts"]["auto quote"] = function()
+  child.lua [[ M.setup { auto_quote = true, } ]]
+  expect.equality(
+    child.lua [[ return M.build { prompt = "~require~ -e lua !rb", auto_quote = false }]],
+    [[--ignore-case require -g {*.lua} -g !{*.rb}]]
   )
 end
 

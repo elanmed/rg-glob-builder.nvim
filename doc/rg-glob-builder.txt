@@ -64,6 +64,9 @@ SETUP                                                  *rg-glob-builder-setup*
       nil_unless_trailing_space = false,
       -- The single-char string to act as the delimeter for the pattern to pass to rg
       pattern_delimeter = "~",
+      -- Quote the rg pattern and glob flags in single quotes. Defaults to true, except for in 
+      -- the `fzf_lua_adapter`
+      auto_quote = true
     }
 <
 
@@ -72,7 +75,9 @@ TODO                                                    *rg-glob-builder-todo*
 
 
 - [x] Adapter for fzf-lua
+- [ ] Tests for fzf-lua adapter
 - [x] Adapter for telescope
+- [ ] Tests for telescope adapter
 - [ ] Adapter for snacks
 - [ ] Add option for quoting
 

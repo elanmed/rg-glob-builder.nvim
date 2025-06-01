@@ -34,7 +34,7 @@ local opts_schema = {
 --- @field pattern_delimeter? string The single-char string to act as the delimeter for the pattern to pass to rg. Defaults to "~"
 --- @field custom_flags? RgPatternBuilderSetupOptsCustomFlags Custom flags
 --- @field nil_unless_trailing_space? boolean Return `nil` unless the final character is a trailing space. When updating the flags, this option will maintain the current search results until the update is complete. Defaults to `false`
---- @field auto_quote? boolean
+--- @field auto_quote? boolean Quote the rg pattern and glob flags in single quotes. Defaults to true, except for in the `fzf_lua_adapter`.
 
 --- @class RgPatternBuilderSetupOptsCustomFlags
 --- @field extension? string The flag to include or negate an extension to the glob pattern. Extensions are prefixed internally with "*.". Defaults to "-e"
