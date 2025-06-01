@@ -71,8 +71,9 @@ SETUP                                                  *rg-glob-builder-setup*
 TODO                                                    *rg-glob-builder-todo*
 
 
-- [ ] Adapter for fzf-lua
-- [ ] Adapter for telescope
+- [x] Adapter for fzf-lua
+- [x] Adapter for telescope
 - [ ] Adapter for snacks
+- [ ] Add option for quoting
 
 vim:tw=78:ts=8:ft=help:norl:

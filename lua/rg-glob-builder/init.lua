@@ -84,4 +84,8 @@ M.fzf_lua_adapter = function(opts)
   return require "rg-glob-builder.fzf-lua-adapter".fzf_lua_adapter(opts)
 end
 
+M.telescope_adapter = function(opts)
+  return require "rg-glob-builder.telescope-adapter".telescope_adapter(opts)
+end
+
 return M

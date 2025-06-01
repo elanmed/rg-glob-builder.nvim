@@ -54,6 +54,7 @@ require "rg-glob-builder".setup {
 ```
 
 ## TODO
-- [ ] Adapter for fzf-lua
-- [ ] Adapter for telescope
+- [x] Adapter for fzf-lua
+- [x] Adapter for telescope
 - [ ] Adapter for snacks
+- [ ] Add option for quoting

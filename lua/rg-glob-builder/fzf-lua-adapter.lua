@@ -3,7 +3,7 @@ local M = {}
 -- Based on https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-1-live-ripgrep
 M.fzf_lua_adapter = function(opts)
   local helpers = require "rg-glob-builder.helpers"
-  local rg_pattern_builder = require "rg-glob-builder.builder"
+  local rg_glob_builder = require "rg-glob-builder.builder"
   local fzf_lua = require "fzf-lua"
 
   opts = helpers.default(opts, {})
@@ -33,7 +33,7 @@ M.fzf_lua_adapter = function(opts)
   opts = fzf_lua.core.set_fzf_field_index(opts)
 
   return fzf_lua.fzf_live(function(prompt)
-    local flags = rg_pattern_builder.build {
+    local flags = rg_glob_builder.build {
       prompt = prompt,
     }
 
