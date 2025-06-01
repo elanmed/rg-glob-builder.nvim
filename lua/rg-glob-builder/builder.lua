@@ -50,7 +50,7 @@ local function construct_rg_flags(opts)
       flag = "!" .. flag
     end
 
-    return "-g " .. flag
+    return "--glob " .. flag
   end
 
   return nil
@@ -186,9 +186,11 @@ M.build = function(opts)
   }
 
   local cmd = vim.iter {
-    flags.case_flag, flags.word_flag,
+    flags.case_flag,
+    flags.word_flag,
+    include_flag,
+    negate_flag,
     parsed_search.search,
-    include_flag, negate_flag,
   }:flatten():totable()
 
   return table.concat(cmd, " ")

@@ -24,19 +24,18 @@ M.telescope_adapter = function(opts)
       vim.tbl_deep_extend(
         "force",
         opts.rg_glob_builder_opts,
-        {
-          prompt = prompt,
-          auto_quote = false,
-        }
+        { prompt = prompt, auto_quote = false, }
       )
     )
     local split_glob_flags = helpers.split(glob_flags or "")
-    print(vim.inspect(split_glob_flags))
 
     local cmd_tbl = vim.iter {
       vimgrep_flags,
       split_glob_flags,
     }:flatten():totable()
+    local cmd = table.concat(cmd_tbl, " ")
+    print(cmd)
+
     return cmd_tbl
   end
 

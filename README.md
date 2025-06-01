@@ -11,7 +11,7 @@ require "rg-glob-builder".build {
 generates:
 
 ```bash
---ignore-case 'require' -g '{*_spec.rb,*.rb,*.md,**/plugins/**}' -g !'{*.test.*,*.lua,**/feature_*/**}'
+--ignore-case --glob'{*_spec.rb,*.rb,*.md,**/plugins/**}' --glob!'{*.test.*,*.lua,**/feature_*/**}' 'require'
 ```
 
 By using two glob flags, the generated `rg` command reads like the following:
@@ -93,7 +93,6 @@ require "rg-glob-builder".setup {
 require "rg-glob-builder".build {
   prompt = "" -- The primary pattern to search
   -- ...
-  -- Also accepts the same opts as `setup`
 }
 ```
 
@@ -104,7 +103,7 @@ require "rg-glob-builder".fzf_lua_adapter {
   -- Standard fzf-lua options https://github.com/ibhagwan/fzf-lua#customization
   fzf_lua_opts = {}
 
-  -- Same opts as `build`
+  -- RgGlobBuilderSetupOpts
   rg_glob_builder_opts = {}
 }
 ```
@@ -116,15 +115,10 @@ require "rg-glob-builder".telescope_adapter {
   -- Standard telescope options https://github.com/nvim-telescope/telescope.nvim#customization
   telescope_opts = {}
 
-  -- Same opts as `build`
+  -- RgGlobBuilderSetupOpts
   rg_glob_builder_opts = {}
 }
 ```
 
 ## TODO
-- [x] Adapter for fzf-lua
-- [ ] Tests for fzf-lua adapter
-- [x] Adapter for telescope
-- [ ] Tests for telescope adapter
 - [ ] Adapter for snacks
-- [ ] Tests for snacks adapter

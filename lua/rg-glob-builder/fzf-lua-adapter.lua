@@ -48,8 +48,8 @@ M.fzf_lua_adapter = function(opts)
       flags,
     }:flatten():totable()
     local cmd = table.concat(cmd_tbl, " ")
+    print(cmd)
 
-    if cmd then print(cmd) end
     return cmd
   end, opts.fzf_lua_opts)
 end

@@ -25,7 +25,7 @@ A neovim plugin to generate intuitive glob patterns for searching with `rg`.
 generates:
 
 >bash
-    --ignore-case 'require' -g '{*_spec.rb,*.rb,*.md,**/plugins/**}' -g !'{*.test.*,*.lua,**/feature_*/**}'
+    --ignore-case --glob'{*_spec.rb,*.rb,*.md,**/plugins/**}' --glob!'{*.test.*,*.lua,**/feature_*/**}' 'require'
 <
 By using two glob flags, the generated `rg` command reads like the following:
 
@@ -120,7 +120,6 @@ EXPORTS                                              *rg-glob-builder-exports*
     require "rg-glob-builder".build {
       prompt = "" -- The primary pattern to search
       -- ...
-      -- Also accepts the same opts as `setup`
     }
 <
 
@@ -133,7 +132,7 @@ EXPORTS                                              *rg-glob-builder-exports*
       -- Standard fzf-lua options https://github.com/ibhagwan/fzf-lua#customization
       fzf_lua_opts = {}
     
-      -- Same opts as `build`
+      -- RgGlobBuilderSetupOpts
       rg_glob_builder_opts = {}
     }
 <
@@ -147,7 +146,7 @@ EXPORTS                                              *rg-glob-builder-exports*
       -- Standard telescope options https://github.com/nvim-telescope/telescope.nvim#customization
       telescope_opts = {}
     
-      -- Same opts as `build`
+      -- RgGlobBuilderSetupOpts
       rg_glob_builder_opts = {}
     }
 <
@@ -156,11 +155,6 @@ EXPORTS                                              *rg-glob-builder-exports*
 TODO                                                    *rg-glob-builder-todo*
 
 
-- [x] Adapter for fzf-lua
-- [ ] Tests for fzf-lua adapter
-- [x] Adapter for telescope
-- [ ] Tests for telescope adapter
 - [ ] Adapter for snacks
-- [ ] Tests for snacks adapter
 
 vim:tw=78:ts=8:ft=help:norl:
