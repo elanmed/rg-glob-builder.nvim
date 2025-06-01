@@ -32,7 +32,7 @@ M.fzf_lua_adapter = function(opts)
   opts.fzf_lua_opts = fzf_lua.core.set_fzf_field_index(opts.fzf_lua_opts)
 
   return fzf_lua.fzf_live(function(prompt)
-    local flags = rg_glob_builder.build(
+    local glob_flags = rg_glob_builder.build(
       vim.tbl_deep_extend(
         "force",
         opts.rg_glob_builder_opts,
@@ -40,12 +40,16 @@ M.fzf_lua_adapter = function(opts)
       )
     )
 
+    if glob_flags == nil and opts.rg_glob_builder_opts.nil_unless_trailing_space then
+      return nil
+    end
+
     local cmd_tbl = vim.iter {
       "rg",
       "--line-number", "--column", -- necessary to scroll the preview to the correct line
       "--hidden",
       "--color=always",
-      flags,
+      glob_flags,
     }:flatten():totable()
     local cmd = table.concat(cmd_tbl, " ")
     print(cmd)

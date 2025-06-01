@@ -27,6 +27,10 @@ M.telescope_adapter = function(opts)
         { prompt = prompt, auto_quote = false, }
       )
     )
+    if glob_flags == nil and opts.rg_glob_builder_opts.nil_unless_trailing_space then
+      return nil
+    end
+
     local split_glob_flags = helpers.split(glob_flags or "")
 
     local cmd_tbl = vim.iter {
