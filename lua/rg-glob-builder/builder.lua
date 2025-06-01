@@ -40,10 +40,10 @@ local function construct_rg_flags(opts)
       :totable()
 
   if vim.tbl_count(file_ext_dir_tbl) > 0 then
-    local flag = string.format("'{%s}'", table.concat(file_ext_dir_tbl, ","))
+    local flag = string.format("{%s}", table.concat(file_ext_dir_tbl, ","))
     local auto_quote = helpers.default(opts.auto_quote, true)
-    if not auto_quote then
-      flag = flag:sub(2, #flag - 1)
+    if auto_quote then
+      flag = string.format("'%s'", flag)
     end
 
     if opts.negate then
@@ -68,10 +68,10 @@ local function parse_search(opts)
   local end_index = end_tilde_index or (#opts.prompt + 1)
   local search = opts.prompt:sub(2, end_index - 1)
 
-  local formatted_search = ("'%s'"):format(search)
+  local formatted_search = search
   local auto_quote = helpers.default(opts.auto_quote, true)
-  if not auto_quote then
-    formatted_search = formatted_search:sub(2, #formatted_search - 1)
+  if auto_quote then
+    formatted_search = string.format("'%s'", formatted_search)
   end
 
   return { search = formatted_search, search_end_index = end_index, }
