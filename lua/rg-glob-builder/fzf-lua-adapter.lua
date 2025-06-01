@@ -1,12 +1,11 @@
 local M = {}
 
--- Based on https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-1-live-ripgrep
+-- based on https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-1-live-ripgrep
+
+--- @param opts FzfLuaAdapterOpts
 M.fzf_lua_adapter = function(opts)
-  local helpers = require "rg-glob-builder.helpers"
   local rg_glob_builder = require "rg-glob-builder.builder"
   local fzf_lua = require "fzf-lua"
-
-  opts = helpers.default(opts, {})
 
   local default_opts = {
     git_icons = true,
@@ -15,27 +14,31 @@ M.fzf_lua_adapter = function(opts)
     actions = fzf_lua.defaults.actions.files,
     previewer = "builtin",
     fn_transform = function(x)
-      return fzf_lua.make_entry.file(x, opts)
+      return fzf_lua.make_entry.file(x, opts.fzf_lua_opts)
     end,
     fzf_opts = { ["--multi"] = true, },
   }
-  opts = vim.tbl_deep_extend("force", default_opts, opts)
+  opts.fzf_lua_opts = vim.tbl_deep_extend("force", default_opts, opts.fzf_lua_opts)
 
-  if opts.git_icons then
-    opts.fn_preprocess = function(o)
-      opts.diff_files = fzf_lua.make_entry.preprocess(o).diff_files
-      return opts
+  if opts.fzf_lua_opts.git_icons then
+    opts.fzf_lua_opts.fn_preprocess = function(o)
+      opts.fzf_lua_opts.diff_files = fzf_lua.make_entry.preprocess(o).diff_files
+      return opts.fzf_lua_opts
     end
   end
 
   -- found in the live_grep implementation, necessary to scroll the preview to the correct line with the bats previewer
   -- fzf-lua/lua/fzf-lua/providers/grep.lua
-  opts = fzf_lua.core.set_fzf_field_index(opts)
+  opts.fzf_lua_opts = fzf_lua.core.set_fzf_field_index(opts.fzf_lua_opts)
 
   return fzf_lua.fzf_live(function(prompt)
-    local flags = rg_glob_builder.build {
-      prompt = prompt,
-    }
+    local flags = rg_glob_builder.build(
+      vim.tbl_deep_extend(
+        "force",
+        opts.rg_glob_builder_opts,
+        { prompt = prompt, }
+      )
+    )
 
     local cmd_tbl = vim.iter {
       "rg",
@@ -48,7 +51,7 @@ M.fzf_lua_adapter = function(opts)
 
     if cmd then print(cmd) end
     return cmd
-  end, opts)
+  end, opts.fzf_lua_opts)
 end
 
 return M

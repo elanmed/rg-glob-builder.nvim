@@ -25,14 +25,16 @@ local opts_schema = {
       },
     },
     nil_unless_trailing_space = { type = "boolean", optional = true, },
+    auto_quote = { type = "boolean", optional = true, },
   },
 }
 
 
---- @class RgPatternBuilderSetupOpts
+--- @class RgGlobBuilderSetupOpts
 --- @field pattern_delimeter? string The single-char string to act as the delimeter for the pattern to pass to rg. Defaults to "~"
 --- @field custom_flags? RgPatternBuilderSetupOptsCustomFlags Custom flags
 --- @field nil_unless_trailing_space? boolean Return `nil` unless the final character is a trailing space. When updating the flags, this option will maintain the current search results until the update is complete. Defaults to `false`
+--- @field auto_quote? boolean
 
 --- @class RgPatternBuilderSetupOptsCustomFlags
 --- @field extension? string The flag to include or negate an extension to the glob pattern. Extensions are prefixed internally with "*.". Defaults to "-e"
@@ -43,9 +45,9 @@ local opts_schema = {
 --- @field whole_word? string The flag to search case by whole word, adds the `--word-regexp` flag. Defaults to "-w"
 --- @field partial_word? string The flag to search case by partial word, removes the `--word-regexp` flag (searching by partial word is the default behavior in rg). Defaults to "-w"
 
-local setup_opts = nil
+local setup_opts = {}
 
---- @param opts RgPatternBuilderSetupOpts
+--- @param opts RgGlobBuilderSetupOpts
 M.setup = function(opts)
   local validate = require "rg-glob-builder.validator".validate
   if not validate(opts_schema, opts) then
@@ -61,7 +63,7 @@ M.setup = function(opts)
   setup_opts = opts
 end
 
---- @param opts RgPatternBuilderBuildOpts
+--- @param opts RgGlobBuilderBuildOpts
 M.build = function(opts)
   local validate = require "rg-glob-builder.validator".validate
   local helpers = require "rg-glob-builder.helpers"
@@ -74,18 +76,57 @@ M.build = function(opts)
 
   local merged_opts = vim.tbl_deep_extend(
     "force",
-    helpers.default(setup_opts, {}),
+    setup_opts,
     opts
   )
   return builder.build(merged_opts)
 end
 
+--- @class FzfLuaAdapterOpts
+--- @field fzf_lua_opts table
+--- @field rg_glob_builder_opts RgGlobBuilderBuildOpts
+
+--- @param opts FzfLuaAdapterOpts
 M.fzf_lua_adapter = function(opts)
-  return require "rg-glob-builder.fzf-lua-adapter".fzf_lua_adapter(opts)
+  local helpers = require "rg-glob-builder.helpers"
+
+  opts = helpers.default(opts, {})
+  local fzf_lua_opts = helpers.default(opts.fzf_lua_opts, {})
+  local rg_glob_builder_opts = helpers.default(opts.rg_glob_builder_opts, {})
+
+  local merged_rg_glob_builder_opts = vim.tbl_deep_extend(
+    "force",
+    setup_opts,
+    rg_glob_builder_opts
+  )
+  return require "rg-glob-builder.fzf-lua-adapter".fzf_lua_adapter {
+    fzf_lua_opts = fzf_lua_opts,
+    rg_glob_builder_opts = merged_rg_glob_builder_opts,
+  }
 end
 
+--- @class TelescopeAdapterOpts
+--- @field telescope_opts table
+--- @field rg_glob_builder_opts RgGlobBuilderBuildOpts
+
+--- @param opts TelescopeAdapterOpts
 M.telescope_adapter = function(opts)
-  return require "rg-glob-builder.telescope-adapter".telescope_adapter(opts)
+  local helpers = require "rg-glob-builder.helpers"
+
+  opts = helpers.default(opts, {})
+  local telescope_opts = helpers.default(opts.telescope_opts, {})
+  local rg_glob_builder_opts = helpers.default(opts.rg_glob_builder_opts, {})
+
+  local merged_rg_glob_builder_opts = vim.tbl_deep_extend(
+    "force",
+    setup_opts,
+    rg_glob_builder_opts
+  )
+
+  return require "rg-glob-builder.telescope-adapter".telescope_adapter {
+    rg_glob_builder_opts = merged_rg_glob_builder_opts,
+    telescope_opts = telescope_opts,
+  }
 end
 
 return M

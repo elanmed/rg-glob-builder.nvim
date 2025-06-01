@@ -2,7 +2,12 @@ local helpers = require "rg-glob-builder.helpers"
 
 local M = {}
 
---- @param opts { flag_val: string, include_tbl: table, negate_tbl: table }
+--- @class RecordFlagOpts
+--- @field flag_val string
+--- @field include_tbl table
+--- @field negate_tbl table
+
+--- @param opts RecordFlagOpts
 local function record_flag(opts)
   if opts.flag_val:sub(1, 1) == "!" then
     if #opts.flag_val > 1 then
@@ -13,7 +18,14 @@ local function record_flag(opts)
   end
 end
 
---- @param opts { dir_tbl: table, file_tbl: table, ext_tbl: table, negate: boolean }
+--- @class ConstructRgFlagsOpts
+--- @field dir_tbl table
+--- @field file_tbl table
+--- @field ext_tbl table
+--- @field negate boolean
+--- @field auto_quote? boolean
+
+--- @param opts ConstructRgFlagsOpts
 local function construct_rg_flags(opts)
   local ext_tbl_processed = vim.tbl_map(function(ext)
     return "*." .. ext
@@ -29,6 +41,10 @@ local function construct_rg_flags(opts)
 
   if vim.tbl_count(file_ext_dir_tbl) > 0 then
     local flag = string.format("'{%s}'", table.concat(file_ext_dir_tbl, ","))
+    local auto_quote = helpers.default(opts.auto_quote, true)
+    if not auto_quote then
+      flag = flag:sub(2, #flag - 1)
+    end
 
     if opts.negate then
       flag = "!" .. flag
@@ -43,6 +59,7 @@ end
 --- @class ParseSearchOpts
 --- @field prompt string
 --- @field pattern_delimeter? string
+--- @field auto_quote? boolean
 
 --- @param opts ParseSearchOpts
 local function parse_search(opts)
@@ -50,7 +67,14 @@ local function parse_search(opts)
   local end_tilde_index = opts.prompt:find(pattern_delimeter, 2)
   local end_index = end_tilde_index or (#opts.prompt + 1)
   local search = opts.prompt:sub(2, end_index - 1)
-  return { search = ("'%s'"):format(search), search_end_index = end_index, }
+
+  local formatted_search = ("'%s'"):format(search)
+  local auto_quote = helpers.default(opts.auto_quote, true)
+  if not auto_quote then
+    formatted_search = formatted_search:sub(2, #formatted_search - 1)
+  end
+
+  return { search = formatted_search, search_end_index = end_index, }
 end
 
 --- @class ParseFlagsOpts
@@ -115,16 +139,16 @@ local function parse_flags(opts)
   return parsed
 end
 
---- @class RgPatternBuilderBuildOpts: RgPatternBuilderSetupOpts
+--- @class RgGlobBuilderBuildOpts: RgGlobBuilderSetupOpts
 --- @field prompt string
 
---- @param opts RgPatternBuilderBuildOpts
+--- @param opts RgGlobBuilderBuildOpts
 M.build = function(opts)
   if not opts.prompt or opts.prompt == "" then
     return nil
   end
 
-  local parsed_search = parse_search { prompt = opts.prompt, pattern_delimeter = opts.pattern_delimeter, }
+  local parsed_search = parse_search { prompt = opts.prompt, pattern_delimeter = opts.pattern_delimeter, auto_quote = opts.auto_quote, }
 
   local flags_prompt = opts.prompt:sub(parsed_search.search_end_index + 1)
   local nil_unless_trailing_space = helpers.default(opts.nil_unless_trailing_space, false)
@@ -150,6 +174,7 @@ M.build = function(opts)
     dir_tbl = flags.include_dir,
     file_tbl = flags.include_file,
     ext_tbl = flags.include_ext,
+    auto_quote = opts.auto_quote,
   }
 
   local negate_flag = construct_rg_flags {
@@ -157,6 +182,7 @@ M.build = function(opts)
     dir_tbl = flags.negate_dir,
     file_tbl = flags.negate_file,
     ext_tbl = flags.negate_ext,
+    auto_quote = opts.auto_quote,
   }
 
   local cmd = vim.iter {
