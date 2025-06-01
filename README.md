@@ -12,9 +12,7 @@ Thankfully, all three of the most popular picker plugins support passing argumen
 - [Native support in `snacks`](https://github.com/folke/snacks.nvim/discussions/461#discussioncomment-11894765)
 - [Native support in `fzf-lua`](https://github.com/ibhagwan/fzf-lua/wiki#how-can-i-restrict-grep-search-to-certain-files)
 
-However, native `rg` arguments are clunky to type and difficult to order correctly. 
-
-So I built `rg-glob-builder`: a plugin to generate a `rg` command with intuitive flag ordering using a handful of ergonomic custom flags.
+However, native `rg` arguments are clunky to type and difficult to order [correctly](https://github.com/ElanMedoff/rg-glob-builder.nvim#ordering-rg-flags-to-search-intuitively). So I built `rg-glob-builder.nvim`: a plugin to generate a reliable `rg` command with intuitive flag orderings using a handful of ergonomic custom flags.
 
 #### Searching by extension
 ```bash
@@ -90,8 +88,8 @@ require "rg-glob-builder".setup {
   -- Return `nil` unless the final character is a trailing space. When updating the flags, 
   -- this option will maintain the current search results until the update is complete
   nil_unless_trailing_space = false,
-  -- The single-char string to act as the delimeter for the pattern to pass to rg
-  pattern_delimeter = "~",
+  -- The single-char string to act as the delimiter for the pattern to pass to rg
+  pattern_delimiter = "~",
   -- Quote the rg pattern and glob flags in single quotes. Defaults to true, except for in 
   -- the `fzf_lua_adapter`
   auto_quote = true
@@ -101,7 +99,7 @@ require "rg-glob-builder".setup {
 ## Types 
 ```lua
 --- @class RgGlobBuilderSetupOpts
---- @field pattern_delimeter? string
+--- @field pattern_delimiter? string
 --- @field custom_flags? RgPatternBuilderSetupOptsCustomFlags
 --- @field nil_unless_trailing_space? boolean
 --- @field auto_quote? boolean

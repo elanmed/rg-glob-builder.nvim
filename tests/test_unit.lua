@@ -66,8 +66,8 @@ T["build"]["setup opts"]["directory"] = function()
     [[--ignore-case --glob '{**/plugins/**}' --glob !'{**/feature_*/**}' -- 'require']]
   )
 end
-T["build"]["setup opts"]["pattern_delimeter"] = function()
-  child.lua [[ M.setup { pattern_delimeter = "_", } ]]
+T["build"]["setup opts"]["pattern_delimiter"] = function()
+  child.lua [[ M.setup { pattern_delimiter = "_", } ]]
   expect.equality(
     child.lua [[ return M.build { prompt = "_require_", }]],
     [[--ignore-case -- 'require']]
@@ -141,9 +141,9 @@ T["build"]["local opts"]["directory"] = function()
     [[--ignore-case --glob '{**/plugins/**}' --glob !'{**/feature_*/**}' -- 'require']]
   )
 end
-T["build"]["local opts"]["pattern_delimeter"] = function()
+T["build"]["local opts"]["pattern_delimiter"] = function()
   expect.equality(
-    child.lua [[ return M.build { prompt = "_require_", pattern_delimeter = "_", }]],
+    child.lua [[ return M.build { prompt = "_require_", pattern_delimiter = "_", }]],
     [[--ignore-case -- 'require']]
   )
 end
@@ -217,10 +217,10 @@ T["build"]["local opts overriding setup opts"]["directory"] = function()
     [[--ignore-case --glob '{**/plugins/**}' --glob !'{**/feature_*/**}' -- 'require']]
   )
 end
-T["build"]["local opts overriding setup opts"]["pattern_delimeter"] = function()
-  child.lua [[ M.setup { pattern_delimeter = "-", } ]]
+T["build"]["local opts overriding setup opts"]["pattern_delimiter"] = function()
+  child.lua [[ M.setup { pattern_delimiter = "-", } ]]
   expect.equality(
-    child.lua [[ return M.build { prompt = "_require_", pattern_delimeter = "_", }]],
+    child.lua [[ return M.build { prompt = "_require_", pattern_delimiter = "_", }]],
     [[--ignore-case -- 'require']]
   )
 end

@@ -58,13 +58,13 @@ end
 
 --- @class ParseSearchOpts
 --- @field prompt string
---- @field pattern_delimeter? string
+--- @field pattern_delimiter? string
 --- @field auto_quote? boolean
 
 --- @param opts ParseSearchOpts
 local function parse_search(opts)
-  local pattern_delimeter = helpers.default(opts.pattern_delimeter, "~")
-  local end_tilde_index = opts.prompt:find(pattern_delimeter, 2)
+  local pattern_delimiter = helpers.default(opts.pattern_delimiter, "~")
+  local end_tilde_index = opts.prompt:find(pattern_delimiter, 2)
   local end_index = end_tilde_index or (#opts.prompt + 1)
   local search = opts.prompt:sub(2, end_index - 1)
 
@@ -150,7 +150,7 @@ M.build = function(opts)
 
   local parsed_search = parse_search {
     prompt = opts.prompt,
-    pattern_delimeter = opts.pattern_delimeter,
+    pattern_delimiter = opts.pattern_delimiter,
     auto_quote = opts.auto_quote,
   }
 
