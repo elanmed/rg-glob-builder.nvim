@@ -211,7 +211,7 @@ rg --ignore-case --glob 'README.md' --glob !'*.md' -- 'require'
 While the following command will!
 
 ```bash
-rg --ignore-case --glob '*.md' --glob !'README.md' -- 'require'
+rg --ignore-case --glob !'*.md' --glob 'README.md' -- 'require'
 ```
 
 Stated another way, placing all the exclude `--glob` flags at the end of the `rg` command ensures that we have the same AND/OR behavior as VSCode: (results from the include flags) AND (total results minus the results from the exclude flags).

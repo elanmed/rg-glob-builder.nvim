@@ -286,7 +286,7 @@ This means the following command will match VSCode and not show `README.md`:
 While the following command will!
 
 >bash
-    rg --ignore-case --glob '*.md' --glob !'README.md' -- 'require'
+    rg --ignore-case --glob !'*.md' --glob 'README.md' -- 'require'
 <
 Stated another way, placing all the exclude `--glob` flags at the end of the
 `rg` command ensures that we have the same AND/OR behavior as VSCode: (results
