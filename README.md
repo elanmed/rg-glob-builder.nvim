@@ -22,8 +22,10 @@ This AND/OR structure matches the VSCode global search and replace interface, wh
 
 ## Setup
 
+If an option is passed to `setup`, it will be inherited by `build`, `fzf_lua_adapter`, and `telescope_adapter`. If an option is passed to both `setup` and directly to `build`, `fzf_lua_adapter`, or `telescope_adapter`, the latter will take precedence.
+
 ```lua
--- Default options, `setup` can be called as `.setup()` to enable the following options
+-- Default options, no need to pass these to `setup`
 require "rg-glob-builder".setup {
   custom_flags = {
     -- The flag to include or negate a directory to the glob pattern. Extensions are 
@@ -92,7 +94,7 @@ require "rg-glob-builder".setup {
 -- RgGlobBuilderBuildOpts
 require "rg-glob-builder".build {
   prompt = "" -- The primary pattern to search
-  -- ...
+  -- ... RgGlobBuilderSetupOpts
 }
 ```
 
