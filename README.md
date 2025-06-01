@@ -56,10 +56,75 @@ require "rg-glob-builder".setup {
 }
 ```
 
+## Types 
+```lua
+--- @class RgGlobBuilderSetupOpts
+--- @field pattern_delimeter? string
+--- @field custom_flags? RgPatternBuilderSetupOptsCustomFlags
+--- @field nil_unless_trailing_space? boolean
+--- @field auto_quote? boolean
+
+--- @class RgPatternBuilderSetupOptsCustomFlags
+--- @field extension? string
+--- @field file? string
+--- @field directory? string
+--- @field case_sensitive? string
+--- @field ignore_case? string
+--- @field whole_word? string
+--- @field partial_word? string
+
+--- @class RgGlobBuilderBuildOpts: RgGlobBuilderSetupOpts
+--- @field prompt string
+
+--- @class FzfLuaAdapterOpts
+--- @field fzf_lua_opts table
+--- @field rg_glob_builder_opts RgGlobBuilderBuildOpts
+
+--- @class TelescopeAdapterOpts
+--- @field telescope_opts table
+--- @field rg_glob_builder_opts RgGlobBuilderBuildOpts
+```
+
+## Exports
+
+### `build`
+```lua
+-- RgGlobBuilderBuildOpts
+require "rg-glob-builder".build {
+  prompt = "" -- The primary pattern to search
+  -- ...
+  -- Also accepts the same opts as `setup`
+}
+```
+
+### `fzf_lua_adapter`
+```lua
+-- FzfLuaAdapterOpts
+require "rg-glob-builder".fzf_lua_adapter {
+  -- Standard fzf-lua options https://github.com/ibhagwan/fzf-lua#customization
+  fzf_lua_opts = {}
+
+  -- Same opts as `build`
+  rg_glob_builder_opts = {}
+}
+```
+
+### `telescope_adapter`
+```lua
+-- TelescopeAdapterOpts
+require "rg-glob-builder".telescope_adapter {
+  -- Standard telescope options https://github.com/nvim-telescope/telescope.nvim#customization
+  telescope_opts = {}
+
+  -- Same opts as `build`
+  rg_glob_builder_opts = {}
+}
+```
+
 ## TODO
 - [x] Adapter for fzf-lua
 - [ ] Tests for fzf-lua adapter
 - [x] Adapter for telescope
 - [ ] Tests for telescope adapter
 - [ ] Adapter for snacks
-- [ ] Add option for quoting
+- [ ] Tests for snacks adapter
