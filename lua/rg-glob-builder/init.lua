@@ -84,7 +84,7 @@ end
 
 --- @class FzfLuaAdapterOpts
 --- @field fzf_lua_opts table
---- @field rg_glob_builder_opts RgGlobBuilderBuildOpts
+--- @field rg_glob_builder_opts RgGlobBuilderSetupOpts
 
 --- @param opts FzfLuaAdapterOpts
 M.fzf_lua_adapter = function(opts)
@@ -107,7 +107,7 @@ end
 
 --- @class TelescopeAdapterOpts
 --- @field telescope_opts table
---- @field rg_glob_builder_opts RgGlobBuilderBuildOpts
+--- @field rg_glob_builder_opts RgGlobBuilderSetupOpts
 
 --- @param opts TelescopeAdapterOpts
 M.telescope_adapter = function(opts)

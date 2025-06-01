@@ -73,16 +73,16 @@ require "rg-glob-builder".setup {
 --- @field whole_word? string
 --- @field partial_word? string
 
---- @class RgGlobBuilderBuildOpts: RgGlobBuilderSetupOpts
---- @field prompt string
-
 --- @class FzfLuaAdapterOpts
 --- @field fzf_lua_opts table
---- @field rg_glob_builder_opts RgGlobBuilderBuildOpts
+--- @field rg_glob_builder_opts RgGlobBuilderSetupOpts
 
 --- @class TelescopeAdapterOpts
 --- @field telescope_opts table
---- @field rg_glob_builder_opts RgGlobBuilderBuildOpts
+--- @field rg_glob_builder_opts RgGlobBuilderSetupOpts
+
+--- @class RgGlobBuilderBuildOpts: RgGlobBuilderSetupOpts
+--- @field prompt string
 ```
 
 ## Exports
