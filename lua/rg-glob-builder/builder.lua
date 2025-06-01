@@ -190,6 +190,7 @@ M.build = function(opts)
     flags.word_flag,
     include_flag,
     negate_flag,
+    "--",
     parsed_search.search,
   }:flatten():totable()
 
