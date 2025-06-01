@@ -11,7 +11,7 @@ require "rg-glob-builder".build {
 generates:
 
 ```bash
---ignore-case --glob'{*_spec.rb,*.rb,*.md,**/plugins/**}' --glob!'{*.test.*,*.lua,**/feature_*/**}' 'require'
+--ignore-case --glob '{*_spec.rb,*.rb,*.md,**/plugins/**}' --glob !'{*.test.*,*.lua,**/feature_*/**}' -- 'require'
 ```
 
 By using two glob flags, the generated `rg` command reads like the following:
