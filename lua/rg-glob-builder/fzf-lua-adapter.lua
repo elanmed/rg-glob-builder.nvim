@@ -4,6 +4,11 @@ local M = {}
 
 --- @param opts FzfLuaAdapterOpts
 M.fzf_lua_adapter = function(opts)
+  local fzf_lua_oka = pcall(require, "fzf-lua")
+  if not fzf_lua_oka then
+    error "rg_glob_builder.fzf_lua_adapter was called but fzf-lua is not installed!"
+  end
+
   local rg_glob_builder = require "rg-glob-builder.builder"
   local fzf_lua = require "fzf-lua"
 
@@ -52,7 +57,7 @@ M.fzf_lua_adapter = function(opts)
       glob_flags,
     }:flatten():totable()
     local cmd = table.concat(cmd_tbl, " ")
-    print(cmd)
+    vim.notify(cmd, vim.log.levels.INFO)
 
     return cmd
   end, opts.fzf_lua_opts)

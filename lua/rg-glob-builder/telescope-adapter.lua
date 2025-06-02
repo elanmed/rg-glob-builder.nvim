@@ -4,6 +4,12 @@ local M = {}
 
 --- @param opts TelescopeAdapterOpts
 M.telescope_adapter = function(opts)
+  local telescope_ok = pcall(require, "telescope")
+  if not telescope_ok then
+    error "rg_glob_builder.telescope_adapter was called but telescope is not installed!"
+  end
+
+
   local make_entry = require "telescope.make_entry"
   local pickers = require "telescope.pickers"
   local sorters = require "telescope.sorters"
@@ -38,7 +44,7 @@ M.telescope_adapter = function(opts)
       split_glob_flags,
     }:flatten():totable()
     local cmd = table.concat(cmd_tbl, " ")
-    print(cmd)
+    vim.notify(cmd, vim.log.levels.INFO)
 
     return cmd_tbl
   end
