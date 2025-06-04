@@ -1,7 +1,7 @@
 local M = {}
 
 --- @type Schema
-local opts_schema = {
+local setup_opts_schema = {
   type = "table",
   optional = true,
   entries = {
@@ -31,6 +31,7 @@ local opts_schema = {
   exact = true,
 }
 
+
 --- @class RgGlobBuilderSetupOpts
 --- @field pattern_delimiter? string The single-char string to act as the delimiter for the pattern to pass to rg. Defaults to "~"
 --- @field custom_flags? RgPatternBuilderSetupOptsCustomFlags Custom flags
@@ -51,11 +52,11 @@ local setup_opts = {}
 --- @param opts RgGlobBuilderSetupOpts
 M.setup = function(opts)
   local validate = require "rg-glob-builder.validator".validate
-  if not validate(opts_schema, opts) then
+  if not validate(setup_opts_schema, opts) then
     error(
       string.format(
         "Malformed opts! Expected to match schema: %s, received %s",
-        vim.inspect(opts_schema),
+        vim.inspect(setup_opts_schema),
         vim.inspect(opts)
       )
     )
@@ -83,12 +84,33 @@ M.build = function(opts)
   return builder.build(merged_opts)
 end
 
+--- @type Schema
+local fzf_lua_adapter_opts_schema = {
+  type = "table",
+  entries = {
+    fzf_lua_opts = { type = "any", },
+    rg_glob_builder_opts = setup_opts_schema,
+  },
+  exact = true,
+}
+
 --- @class FzfLuaAdapterOpts
 --- @field fzf_lua_opts table
 --- @field rg_glob_builder_opts RgGlobBuilderSetupOpts
 
 --- @param opts FzfLuaAdapterOpts
 M.fzf_lua_adapter = function(opts)
+  local validate = require "rg-glob-builder.validator".validate
+  if not validate(fzf_lua_adapter_opts_schema, opts) then
+    error(
+      string.format(
+        "Malformed opts! Expected to match schema: %s, received %s",
+        vim.inspect(fzf_lua_adapter_opts_schema),
+        vim.inspect(opts)
+      )
+    )
+  end
+
   local helpers = require "rg-glob-builder.helpers"
 
   opts = helpers.default(opts, {})
@@ -106,12 +128,33 @@ M.fzf_lua_adapter = function(opts)
   }
 end
 
+--- @type Schema
+local telescope_adapter_opts_schema = {
+  type = "table",
+  entries = {
+    telescope_opts = { type = "any", },
+    rg_glob_builder_opts = setup_opts_schema,
+  },
+  exact = true,
+}
+
 --- @class TelescopeAdapterOpts
 --- @field telescope_opts table
 --- @field rg_glob_builder_opts RgGlobBuilderSetupOpts
 
 --- @param opts TelescopeAdapterOpts
 M.telescope_adapter = function(opts)
+  local validate = require "rg-glob-builder.validator".validate
+  if not validate(telescope_adapter_opts_schema, opts) then
+    error(
+      string.format(
+        "Malformed opts! Expected to match schema: %s, received %s",
+        vim.inspect(telescope_adapter_opts_schema),
+        vim.inspect(opts)
+      )
+    )
+  end
+
   local helpers = require "rg-glob-builder.helpers"
 
   opts = helpers.default(opts, {})
