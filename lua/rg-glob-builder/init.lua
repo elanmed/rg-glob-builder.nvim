@@ -23,12 +23,13 @@ local opts_schema = {
         whole_word = { type = "string", optional = true, },
         partial_word = { type = "string", optional = true, },
       },
+      exact = true,
     },
     nil_unless_trailing_space = { type = "boolean", optional = true, },
     auto_quote = { type = "boolean", optional = true, },
   },
+  exact = true,
 }
-
 
 --- @class RgGlobBuilderSetupOpts
 --- @field pattern_delimiter? string The single-char string to act as the delimiter for the pattern to pass to rg. Defaults to "~"

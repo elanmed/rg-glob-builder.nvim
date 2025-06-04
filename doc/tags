@@ -1,7 +1,12 @@
 rg-glob-builder-build	rg-glob-builder.txt	/*rg-glob-builder-build*
 rg-glob-builder-exports	rg-glob-builder.txt	/*rg-glob-builder-exports*
 rg-glob-builder-fzf_lua_adapter	rg-glob-builder.txt	/*rg-glob-builder-fzf_lua_adapter*
+rg-glob-builder-globs-are-passed-along	rg-glob-builder.txt	/*rg-glob-builder-globs-are-passed-along*
+rg-glob-builder-intro	rg-glob-builder.txt	/*rg-glob-builder-intro*
 rg-glob-builder-rg-glob-builder.nvim	rg-glob-builder.txt	/*rg-glob-builder-rg-glob-builder.nvim*
+rg-glob-builder-searching-by-extension	rg-glob-builder.txt	/*rg-glob-builder-searching-by-extension*
+rg-glob-builder-searching-by-file	rg-glob-builder.txt	/*rg-glob-builder-searching-by-file*
+rg-glob-builder-searching-in-a-directory	rg-glob-builder.txt	/*rg-glob-builder-searching-in-a-directory*
 rg-glob-builder-setup	rg-glob-builder.txt	/*rg-glob-builder-setup*
 rg-glob-builder-table-of-contents	rg-glob-builder.txt	/*rg-glob-builder-table-of-contents*
 rg-glob-builder-telescope_adapter	rg-glob-builder.txt	/*rg-glob-builder-telescope_adapter*
