@@ -53,13 +53,15 @@ local setup_opts = {}
 M.setup = function(opts)
   local validate = require "rg-glob-builder.validator".validate
   if not validate(setup_opts_schema, opts) then
-    error(
+    vim.notify(
       string.format(
         "Malformed opts! Expected to match schema: %s, received %s",
         vim.inspect(setup_opts_schema),
         vim.inspect(opts)
-      )
+      ),
+      vim.log.levels.ERROR
     )
+    return
   end
 
   setup_opts = opts
@@ -73,7 +75,8 @@ M.build = function(opts)
 
   opts = helpers.default(opts, {})
   if not validate({ type = "string", }, opts.prompt) then
-    error "opts.prompt is required!"
+    vim.notify("opts.prompt is required!", vim.log.levels.ERROR)
+    return
   end
 
   local merged_opts = vim.tbl_deep_extend(
@@ -102,13 +105,15 @@ local fzf_lua_adapter_opts_schema = {
 M.fzf_lua_adapter = function(opts)
   local validate = require "rg-glob-builder.validator".validate
   if not validate(fzf_lua_adapter_opts_schema, opts) then
-    error(
+    vim.notify(
       string.format(
         "Malformed opts! Expected to match schema: %s, received %s",
         vim.inspect(fzf_lua_adapter_opts_schema),
         vim.inspect(opts)
-      )
+      ),
+      vim.log.levels.ERROR
     )
+    return
   end
 
   local helpers = require "rg-glob-builder.helpers"
@@ -146,13 +151,15 @@ local telescope_adapter_opts_schema = {
 M.telescope_adapter = function(opts)
   local validate = require "rg-glob-builder.validator".validate
   if not validate(telescope_adapter_opts_schema, opts) then
-    error(
+    vim.notify(
       string.format(
         "Malformed opts! Expected to match schema: %s, received %s",
         vim.inspect(telescope_adapter_opts_schema),
         vim.inspect(opts)
-      )
+      ),
+      vim.log.levels.ERROR
     )
+    return
   end
 
   local helpers = require "rg-glob-builder.helpers"
