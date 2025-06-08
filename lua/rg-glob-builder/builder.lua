@@ -157,6 +157,7 @@ M.build = function(opts)
   local flags_prompt = opts.prompt:sub(parsed_search.search_end_index + 1)
   local nil_unless_trailing_space = helpers.default(opts.nil_unless_trailing_space, false)
   if nil_unless_trailing_space and flags_prompt:sub(-1) ~= " " then
+    vim.notify("waiting for a trailing space...", vim.log.levels.INFO)
     return nil
   end
 
