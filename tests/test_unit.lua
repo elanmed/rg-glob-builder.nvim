@@ -49,21 +49,21 @@ T["build"]["setup opts"]["extension"] = function()
   child.lua [[ M.setup { custom_flags = { extension = "--ext", }, } ]]
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ --ext md !lua", }]],
-    [[--ignore-case --glob '{*.md}' --glob !'{*.lua}' -- 'require']]
+    [[--ignore-case -g '*.md' -g '!*.lua' -- 'require']]
   )
 end
 T["build"]["setup opts"]["file"] = function()
   child.lua [[ M.setup { custom_flags = { file = "--file", }, } ]]
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ --file README.md !init.lua", }]],
-    [[--ignore-case --glob '{README.md}' --glob !'{init.lua}' -- 'require']]
+    [[--ignore-case -g 'README.md' -g '!init.lua' -- 'require']]
   )
 end
 T["build"]["setup opts"]["directory"] = function()
   child.lua [[ M.setup { custom_flags = { directory = "--dir", }, } ]]
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ --dir plugins !feature_*", }]],
-    [[--ignore-case --glob '{**/plugins/**}' --glob !'{**/feature_*/**}' -- 'require']]
+    [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
   )
 end
 T["build"]["setup opts"]["pattern_delimiter"] = function()
@@ -88,7 +88,7 @@ T["build"]["setup opts"]["auto quote"] = function()
   child.lua [[ M.setup { auto_quote = false, } ]]
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -e lua !rb", }]],
-    [[--ignore-case --glob {*.lua} --glob !{*.rb} -- require]]
+    [[--ignore-case -g *.lua -g !*.rb -- require]]
   )
 end
 
@@ -126,19 +126,19 @@ end
 T["build"]["local opts"]["extension"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ --ext md !lua", custom_flags = { extension = "--ext", }, }]],
-    [[--ignore-case --glob '{*.md}' --glob !'{*.lua}' -- 'require']]
+    [[--ignore-case -g '*.md' -g '!*.lua' -- 'require']]
   )
 end
 T["build"]["local opts"]["file"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ --file README.md !init.lua", custom_flags = { file = "--file", }, }]],
-    [[--ignore-case --glob '{README.md}' --glob !'{init.lua}' -- 'require']]
+    [[--ignore-case -g 'README.md' -g '!init.lua' -- 'require']]
   )
 end
 T["build"]["local opts"]["directory"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ --dir plugins !feature_*", custom_flags = { directory = "--dir", }, }]],
-    [[--ignore-case --glob '{**/plugins/**}' --glob !'{**/feature_*/**}' -- 'require']]
+    [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
   )
 end
 T["build"]["local opts"]["pattern_delimiter"] = function()
@@ -160,7 +160,7 @@ end
 T["build"]["local opts"]["auto quote"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -e lua !rb", auto_quote = false }]],
-    [[--ignore-case --glob {*.lua} --glob !{*.rb} -- require]]
+    [[--ignore-case -g *.lua -g !*.rb -- require]]
   )
 end
 
@@ -200,21 +200,21 @@ T["build"]["local opts overriding setup opts"]["extension"] = function()
   child.lua [[ M.setup { custom_flags = { extension = "--e" }, } ]]
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ --ext md !lua", custom_flags = { extension = "--ext", }, }]],
-    [[--ignore-case --glob '{*.md}' --glob !'{*.lua}' -- 'require']]
+    [[--ignore-case -g '*.md' -g '!*.lua' -- 'require']]
   )
 end
 T["build"]["local opts overriding setup opts"]["file"] = function()
   child.lua [[ M.setup { custom_flags = { file = "--f" }, } ]]
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ --file README.md !init.lua", custom_flags = { file = "--file", }, }]],
-    [[--ignore-case --glob '{README.md}' --glob !'{init.lua}' -- 'require']]
+    [[--ignore-case -g 'README.md' -g '!init.lua' -- 'require']]
   )
 end
 T["build"]["local opts overriding setup opts"]["directory"] = function()
   child.lua [[ M.setup { custom_flags = { directory = "--d" }, } ]]
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ --dir plugins !feature_*", custom_flags = { directory = "--dir", }, }]],
-    [[--ignore-case --glob '{**/plugins/**}' --glob !'{**/feature_*/**}' -- 'require']]
+    [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
   )
 end
 T["build"]["local opts overriding setup opts"]["pattern_delimiter"] = function()
@@ -239,7 +239,7 @@ T["build"]["local opts overriding setup opts"]["auto quote"] = function()
   child.lua [[ M.setup { auto_quote = true, } ]]
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -e lua !rb", auto_quote = false }]],
-    [[--ignore-case --glob {*.lua} --glob !{*.rb} -- require]]
+    [[--ignore-case -g *.lua -g !*.rb -- require]]
   )
 end
 
@@ -288,39 +288,39 @@ T["build"]["default opts"]["file"] = MiniTest.new_set()
 T["build"]["default opts"]["file"]["should include files"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -f init.lua", }]],
-    [[--ignore-case --glob '{init.lua}' -- 'require']]
+    [[--ignore-case -g 'init.lua' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -f init.lua README.md *.test.*", }]],
-    [[--ignore-case --glob '{init.lua,README.md,*.test.*}' -- 'require']]
+    [[--ignore-case -g 'init.lua' -g 'README.md' -g '*.test.*' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -f init.lua -f README.md -f *.test.*", }]],
-    [[--ignore-case --glob '{init.lua,README.md,*.test.*}' -- 'require']]
+    [[--ignore-case -g 'init.lua' -g 'README.md' -g '*.test.*' -- 'require']]
   )
 end
 T["build"]["default opts"]["file"]["should exclude files"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -f !init.lua", }]],
-    [[--ignore-case --glob !'{init.lua}' -- 'require']]
+    [[--ignore-case -g '!init.lua' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -f !init.lua !README.md !*.test.*", }]],
-    [[--ignore-case --glob !'{init.lua,README.md,*.test.*}' -- 'require']]
+    [[--ignore-case -g '!init.lua' -g '!README.md' -g '!*.test.*' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -f !init.lua -f !README.md -f !*.test.*", }]],
-    [[--ignore-case --glob !'{init.lua,README.md,*.test.*}' -- 'require']]
+    [[--ignore-case -g '!init.lua' -g '!README.md' -g '!*.test.*' -- 'require']]
   )
 end
 T["build"]["default opts"]["file"]["should include and exclude files"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -f README.md !init.lua", }]],
-    [[--ignore-case --glob '{README.md}' --glob !'{init.lua}' -- 'require']]
+    [[--ignore-case -g 'README.md' -g '!init.lua' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -f README.md -f !init.lua", }]],
-    [[--ignore-case --glob '{README.md}' --glob !'{init.lua}' -- 'require']]
+    [[--ignore-case -g 'README.md' -g '!init.lua' -- 'require']]
   )
 end
 
@@ -328,39 +328,39 @@ T["build"]["default opts"]["extension"] = MiniTest.new_set()
 T["build"]["default opts"]["extension"]["should include extensions"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -e lua", }]],
-    [[--ignore-case --glob '{*.lua}' -- 'require']]
+    [[--ignore-case -g '*.lua' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -e lua rb md", }]],
-    [[--ignore-case --glob '{*.lua,*.rb,*.md}' -- 'require']]
+    [[--ignore-case -g '*.lua' -g '*.rb' -g '*.md' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -e lua -e rb -e md", }]],
-    [[--ignore-case --glob '{*.lua,*.rb,*.md}' -- 'require']]
+    [[--ignore-case -g '*.lua' -g '*.rb' -g '*.md' -- 'require']]
   )
 end
 T["build"]["default opts"]["extension"]["should exclude extensions"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -e !lua", }]],
-    [[--ignore-case --glob !'{*.lua}' -- 'require']]
+    [[--ignore-case -g '!*.lua' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -e !lua !rb !md", }]],
-    [[--ignore-case --glob !'{*.lua,*.rb,*.md}' -- 'require']]
+    [[--ignore-case -g '!*.lua' -g '!*.rb' -g '!*.md' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -e !lua -e !rb -e !md", }]],
-    [[--ignore-case --glob !'{*.lua,*.rb,*.md}' -- 'require']]
+    [[--ignore-case -g '!*.lua' -g '!*.rb' -g '!*.md' -- 'require']]
   )
 end
 T["build"]["default opts"]["extension"]["should include and exclude extensions"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -e md !lua", }]],
-    [[--ignore-case --glob '{*.md}' --glob !'{*.lua}' -- 'require']]
+    [[--ignore-case -g '*.md' -g '!*.lua' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -e md -e !lua", }]],
-    [[--ignore-case --glob '{*.md}' --glob !'{*.lua}' -- 'require']]
+    [[--ignore-case -g '*.md' -g '!*.lua' -- 'require']]
   )
 end
 
@@ -368,46 +368,46 @@ T["build"]["default opts"]["directory"] = MiniTest.new_set()
 T["build"]["default opts"]["directory"]["should include dirs"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -d plugins", }]],
-    [[--ignore-case --glob '{**/plugins/**}' -- 'require']]
+    [[--ignore-case -g '**/plugins/**' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -d plugins feature_*", }]],
-    [[--ignore-case --glob '{**/plugins/**,**/feature_*/**}' -- 'require']]
+    [[--ignore-case -g '**/plugins/**' -g '**/feature_*/**' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -d plugins -d feature_*", }]],
-    [[--ignore-case --glob '{**/plugins/**,**/feature_*/**}' -- 'require']]
+    [[--ignore-case -g '**/plugins/**' -g '**/feature_*/**' -- 'require']]
   )
 end
 T["build"]["default opts"]["directory"]["should exclude dirs"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -d !plugins", }]],
-    [[--ignore-case --glob !'{**/plugins/**}' -- 'require']]
+    [[--ignore-case -g '!**/plugins/**' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -d !plugins !feature_*", }]],
-    [[--ignore-case --glob !'{**/plugins/**,**/feature_*/**}' -- 'require']]
+    [[--ignore-case -g '!**/plugins/**' -g '!**/feature_*/**' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -d !plugins -d !feature_*", }]],
-    [[--ignore-case --glob !'{**/plugins/**,**/feature_*/**}' -- 'require']]
+    [[--ignore-case -g '!**/plugins/**' -g '!**/feature_*/**' -- 'require']]
   )
 end
 T["build"]["default opts"]["directory"]["should include and exclude dirs"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -d plugins !feature_*", }]],
-    [[--ignore-case --glob '{**/plugins/**}' --glob !'{**/feature_*/**}' -- 'require']]
+    [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -d plugins -d !feature_*", }]],
-    [[--ignore-case --glob '{**/plugins/**}' --glob !'{**/feature_*/**}' -- 'require']]
+    [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
   )
 end
 
 T["kitchen sink"] = function()
   expect.equality(
     child.lua [[ return M.build { prompt = "~require~ -e rb md !lua -d plugins !feature_* -f !*.test.* *_spec.rb", }]],
-    [[--ignore-case --glob '{*_spec.rb,*.rb,*.md,**/plugins/**}' --glob !'{*.test.*,*.lua,**/feature_*/**}' -- 'require']]
+    [[--ignore-case -g '*_spec.rb' -g '*.rb' -g '*.md' -g '**/plugins/**' -g '!*.test.*' -g '!*.lua' -g '!**/feature_*/**' -- 'require']]
   )
 end
 

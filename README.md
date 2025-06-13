@@ -17,26 +17,26 @@ However, native `rg` arguments are clunky to type and difficult to order [correc
 #### Searching by extension
 ```bash
 ~require~ -e rb !md
-# --ignore-case --glob '{*.rb}' --glob !'{*.md}' -- 'require'
+# --ignore-case -g '*.rb' -g !'*.md' -- 'require'
 # prefixes the extension with `*.`
 ```
 
 #### Searching by file
 ```bash
 ~require~ -f init.lua
-# --ignore-case --glob '{init.lua}' -- 'require'
+# --ignore-case -g 'init.lua' -- 'require'
 ```
 
 #### Searching in a directory
 ```bash
 ~require~ -d plugins
-# --ignore-case --glob '{**/plugins/**}' -- 'require'
+# --ignore-case -g '**/plugins/**' -- 'require'
 ```
 
 #### Multiple of the same flag is supported
 ```bash
 ~require~ -e rb -f init.lua -e lua
-# --ignore-case --glob '{init.lua,*.rb,*.lua}' -- 'require'
+# --ignore-case -g 'init.lua' -g '*.rb' -g '*.lua' -- 'require'
 ```
 
 #### Case-sensitive and whole-word searching
@@ -55,7 +55,7 @@ with later flags overriding earlier ones:
 #### Globs are passed along
 ```bash
 ~require~ -d plugin* -f !*.test.*
-# --ignore-case --glob '{**/plugin*/**}' --glob !'{*.test.*}' -- 'require'
+# --ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'
 ```
 
 ## Setup
@@ -162,28 +162,19 @@ require "rg-glob-builder".telescope_adapter {
 
 ## Ordering `rg` flags to search intuitively
 
-In `rg`, you can think of each `--glob` flag as representing a list of files to include or exclude. 
+In `rg`, you can think of each `-g` flag as representing a list of files to include or exclude. 
 
-If two `--glob` flags, each including a set of files, are passed to `rg`, the files from each flag are combined together in the results. This effectively means that the files of the two flags are OR'd:
+If two `-g` flags, each including a set of files, are passed to `rg`, the files from each flag are combined together in the results. This effectively means that the files of the two flags are OR'd:
 
 ```bash
-rg --ignore-case --glob '*.rb' --glob '*.md' -- 'require'
+rg --ignore-case -g '*.rb' -g '*.md' -- 'require'
 # Search for `require` in files matching `*.rb` OR in files matching `*.md`
 ```
 
-> Using `{}` is a simple way to combine multiple `--glob` flags into one:
-> ```bash
-> rg --ignore-case --glob '*.rb' --glob '*.md' -- 'require'
-> ```
-> is equivalent to:
-> ```bash
-> rg --ignore-case --glob '{*.rb,*.md}' -- 'require'
-> ```
-
-Similarly, if two `--glob` flags, each excluding a set of files, are passed to `rg`, the files from each flag are combined together and subtracted from the list of results - also an OR:
+Similarly, if two `-g` flags, each excluding a set of files, are passed to `rg`, the files from each flag are combined together and subtracted from the list of results - also an OR:
 
 ```bash
-rg --ignore-case --glob !'*.rb' --glob !'*.md' -- 'require'
+rg --ignore-case -g !'*.rb' -g !'*.md' -- 'require'
 # Search for `require` in files not matching `*.rb` OR in files not matching `*.md`
 ```
 
@@ -205,16 +196,16 @@ According to the `rg` man page:
 This means the following command will match VSCode and not show `README.md`:
 
 ```bash
-rg --ignore-case --glob 'README.md' --glob !'*.md' -- 'require'
+rg --ignore-case -g 'README.md' -g '!*.md' -- 'require'
 ```
 
-While the following command will!
+While the following command _will_ show `README.md`:
 
 ```bash
-rg --ignore-case --glob !'*.md' --glob 'README.md' -- 'require'
+rg --ignore-case -g '!*.md' -g 'README.md' -- 'require'
 ```
 
-Stated another way, placing all the exclude `--glob` flags at the end of the `rg` command ensures that we have the same AND/OR behavior as VSCode: (results from the include flags) AND (total results minus the results from the exclude flags).
+Stated another way, placing all the exclude `-g` flags at the end of the `rg` command ensures that we have the same AND/OR behavior as VSCode: (results from the include flags) AND (total results minus the results from the exclude flags).
 
 See this [github issue](https://github.com/BurntSushi/ripgrep/issues/809#issuecomment-366366982) for more details on ordering `rg` flags.
 

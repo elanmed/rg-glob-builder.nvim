@@ -26,6 +26,7 @@ end
 --- @field auto_quote? boolean
 
 --- @param opts ConstructRgFlagsOpts
+--- @return string | nil
 local function construct_rg_flags(opts)
   local ext_tbl_processed = vim.tbl_map(function(ext)
     return "*." .. ext
@@ -40,17 +41,15 @@ local function construct_rg_flags(opts)
       :totable()
 
   if vim.tbl_count(file_ext_dir_tbl) > 0 then
-    local flag = string.format("{%s}", table.concat(file_ext_dir_tbl, ","))
+    local negate_symbol = opts.negate and "!" or ""
     local auto_quote = helpers.default(opts.auto_quote, true)
-    if auto_quote then
-      flag = string.format("'%s'", flag)
-    end
+    local quote_symbol = auto_quote and "'" or ""
+    local flag = ""
 
-    if opts.negate then
-      flag = "!" .. flag
+    for _, glob in ipairs(file_ext_dir_tbl) do
+      flag = flag .. "-g " .. quote_symbol .. negate_symbol .. glob .. quote_symbol .. " "
     end
-
-    return "--glob " .. flag
+    return vim.trim(flag)
   end
 
   return nil
