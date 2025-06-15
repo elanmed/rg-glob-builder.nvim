@@ -55,7 +55,7 @@ M.setup = function(opts)
   if not validate(setup_opts_schema, opts) then
     vim.notify(
       string.format(
-        "Malformed opts! Expected to match schema: %s, received %s",
+        "Malformed opts passed to rg-glob-builder.setup! Expected to match schema: %s, received %s",
         vim.inspect(setup_opts_schema),
         vim.inspect(opts)
       ),
@@ -75,7 +75,7 @@ M.build = function(opts)
 
   opts = helpers.default(opts, {})
   if not validate({ type = "string", }, opts.prompt) then
-    vim.notify("opts.prompt is required!", vim.log.levels.ERROR)
+    vim.notify("opts.prompt is required in rg-glob-builder.build!", vim.log.levels.ERROR)
     return
   end
 
@@ -107,7 +107,7 @@ M.fzf_lua_adapter = function(opts)
   if not validate(fzf_lua_adapter_opts_schema, opts) then
     vim.notify(
       string.format(
-        "Malformed opts! Expected to match schema: %s, received %s",
+        "Malformed opts passed to rg-glob-builder.fzf_lua_adapter! Expected to match schema: %s, received %s",
         vim.inspect(fzf_lua_adapter_opts_schema),
         vim.inspect(opts)
       ),
@@ -153,7 +153,7 @@ M.telescope_adapter = function(opts)
   if not validate(telescope_adapter_opts_schema, opts) then
     vim.notify(
       string.format(
-        "Malformed opts! Expected to match schema: %s, received %s",
+        "Malformed opts passed to rg-glob-builder.telescope-adapter! Expected to match schema: %s, received %s",
         vim.inspect(telescope_adapter_opts_schema),
         vim.inspect(opts)
       ),
