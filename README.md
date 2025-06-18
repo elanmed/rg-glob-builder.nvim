@@ -15,47 +15,47 @@ Thankfully, all three of the most popular picker plugins support passing argumen
 However, native `rg` arguments are clunky to type and difficult to order [correctly](https://github.com/ElanMedoff/rg-glob-builder.nvim#ordering-rg-flags-to-search-intuitively). So I built `rg-glob-builder.nvim`: a plugin to generate a reliable `rg` command with intuitive flag orderings using a handful of ergonomic custom flags.
 
 #### Searching by extension
-```bash
-~require~ -e rb !md
-# --ignore-case -g '*.rb' -g !'*.md' -- 'require'
-# prefixes the extension with `*.`
+```lua
+require "rg-glob-builder".build { prompt = "~require~ -e rb !md" }
+-- returns: "--ignore-case -g '*.rb' -g !'*.md' -- 'require'"
+-- prefixes the extension with `*.`
 ```
 
 #### Searching by file
-```bash
-~require~ -f init.lua
-# --ignore-case -g 'init.lua' -- 'require'
+```lua
+build { prompt = "~require~ -f init.lua" }
+-- returns: "--ignore-case -g 'init.lua' -- 'require'"
 ```
 
 #### Searching in a directory
-```bash
-~require~ -d plugins
-# --ignore-case -g '**/plugins/**' -- 'require'
+```lua
+require "rg-glob-builder".build { prompt = "~require~ -d plugins" }
+-- returns: "--ignore-case -g '**/plugins/**' -- 'require'"
 ```
 
 #### Multiple of the same flag is supported
-```bash
-~require~ -e rb -f init.lua -e lua
-# --ignore-case -g 'init.lua' -g '*.rb' -g '*.lua' -- 'require'
+```lua
+require "rg-glob-builder".build { prompt = "~require~ -e rb -f init.lua -e lua" }
+-- returns: "--ignore-case -g 'init.lua' -g '*.rb' -g '*.lua' -- 'require'"
 ```
 
 #### Case-sensitive and whole-word searching
-```bash
-~require~ -c -w
-# --case-sensitive --word-rexegp -- 'require'
+```lua
+require "rg-glob-builder".build { prompt = "~require~ -c -w" }
+-- returns: "--case-sensitive --word-rexegp -- 'require'"
 ```
 
 with later flags overriding earlier ones:
-```bash
-~require~ -c -w -nc -nw
-# --ignore-case -- 'require'
-# Searching by partial-word is the default, no flag necessary
+```lua
+require "rg-glob-builder".build { prompt = "~require~ -c -w -nc -nw" }
+-- returns: "--ignore-case -- 'require'"
+-- Searching by partial-word is the default, no flag necessary
 ```
 
 #### Globs are passed along
-```bash
-~require~ -d plugin* -f !*.test.*
-# --ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'
+```lua
+require "rg-glob-builder".build { prompt = "~require~ -d plugin* -f !*.test.*" }
+-- returns "--ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'"
 ```
 
 ## Setup

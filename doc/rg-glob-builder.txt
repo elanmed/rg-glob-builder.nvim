@@ -1,4 +1,4 @@
-*rg-glob-builder.txt*                                Last change: 2025 June 01
+*rg-glob-builder.txt*                                Last change: 2025 June 12
 
 ==============================================================================
 Table of Contents                          *rg-glob-builder-table-of-contents*
@@ -53,57 +53,57 @@ flags.
                                                                               
 SEARCHING BY EXTENSION                *rg-glob-builder-searching-by-extension*
 
->bash
-    ~require~ -e rb !md
-    # --ignore-case -g '*.rb' -g !'*.md' -- 'require'
-    # prefixes the extension with `*.`
+>lua
+    require "rg-glob-builder".build { prompt = "~require~ -e rb !md" }
+    -- returns: "--ignore-case -g '*.rb' -g !'*.md' -- 'require'"
+    -- prefixes the extension with `*.`
 <
 
                                                                               
 SEARCHING BY FILE                          *rg-glob-builder-searching-by-file*
 
->bash
-    ~require~ -f init.lua
-    # --ignore-case -g 'init.lua' -- 'require'
+>lua
+    build { prompt = "~require~ -f init.lua" }
+    -- returns: "--ignore-case -g 'init.lua' -- 'require'"
 <
 
                                                                               
 SEARCHING IN A DIRECTORY            *rg-glob-builder-searching-in-a-directory*
 
->bash
-    ~require~ -d plugins
-    # --ignore-case -g '**/plugins/**' -- 'require'
+>lua
+    require "rg-glob-builder".build { prompt = "~require~ -d plugins" }
+    -- returns: "--ignore-case -g '**/plugins/**' -- 'require'"
 <
 
                                                                               
 MULTIPLE OF THE SAME FLAG IS SUPPORTED*rg-glob-builder-multiple-of-the-same-flag-is-supported*
 
->bash
-    ~require~ -e rb -f init.lua -e lua
-    # --ignore-case -g 'init.lua' -g '*.rb' -g '*.lua' -- 'require'
+>lua
+    require "rg-glob-builder".build { prompt = "~require~ -e rb -f init.lua -e lua" }
+    -- returns: "--ignore-case -g 'init.lua' -g '*.rb' -g '*.lua' -- 'require'"
 <
 
                                                                               
 CASE-SENSITIVE AND WHOLE-WORD SEARCHING*rg-glob-builder-case-sensitive-and-whole-word-searching*
 
->bash
-    ~require~ -c -w
-    # --case-sensitive --word-rexegp -- 'require'
+>lua
+    require "rg-glob-builder".build { prompt = "~require~ -c -w" }
+    -- returns: "--case-sensitive --word-rexegp -- 'require'"
 <
 with later flags overriding earlier ones:
 
->bash
-    ~require~ -c -w -nc -nw
-    # --ignore-case -- 'require'
-    # Searching by partial-word is the default, no flag necessary
+>lua
+    require "rg-glob-builder".build { prompt = "~require~ -c -w -nc -nw" }
+    -- returns: "--ignore-case -- 'require'"
+    -- Searching by partial-word is the default, no flag necessary
 <
 
                                                                               
 GLOBS ARE PASSED ALONG                *rg-glob-builder-globs-are-passed-along*
 
->bash
-    ~require~ -d plugin* -f !*.test.*
-    # --ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'
+>lua
+    require "rg-glob-builder".build { prompt = "~require~ -d plugin* -f !*.test.*" }
+    -- returns "--ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'"
 <
 
 ------------------------------------------------------------------------------
