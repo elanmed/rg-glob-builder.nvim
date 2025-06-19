@@ -232,7 +232,7 @@ b => matched by -g 'b' => include
 c => not matched by any glob => exclude
 d => not matched by any glob => exclude
 
-=> return b
+=> return: b
 ```
 
 If we swapped the exclude flag to the begining of the command, we'd get the opposite behavior:
@@ -247,7 +247,7 @@ b => matched by -g 'b' => include
 c => not matched by any glob => exclude
 d => not matched by any glob => exclude
 
-=> return a,b
+=> return: a,b
 ```
 
 In VSCode, using the global search interface for a similar query would look as follows:
