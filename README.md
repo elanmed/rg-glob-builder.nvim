@@ -14,6 +14,8 @@ Thankfully, all three of the most popular picker plugins support passing argumen
 
 However, native `rg` arguments are clunky to type and difficult to order [correctly](https://github.com/ElanMedoff/rg-glob-builder.nvim#ordering-rg-flags-to-search-intuitively). So I built `rg-glob-builder.nvim`: a plugin to generate a reliable `rg` command with intuitive flag orderings using a handful of ergonomic custom flags.
 
+> Note: the following examples use the `build` function, which is the most straightforward way to generate `rg` flags with `rg-glob-builder`. In practice, I'd recommend using the `fzf_lua_adapter` or `telescope_adapter`, depending on your picker plugin.
+
 #### Searching by extension
 ```lua
 require "rg-glob-builder".build { prompt = "~require~ -e rb !md" }
@@ -66,7 +68,7 @@ If an option is passed to `setup`, it will be inherited by `build`, `fzf_lua_ada
 -- Default options, no need to pass these to `setup`
 require "rg-glob-builder".setup {
   custom_flags = {
-    -- The flag to include or negate a directory to the glob pattern. Extensions are 
+    -- The flag to include or negate a directory to the glob pattern. Directories are 
     -- updated internally to "**/[directory]/**"
     directory = "-d",
     -- The flag to include or negate an extension to the glob pattern. Extensions are 
@@ -160,54 +162,105 @@ require "rg-glob-builder".telescope_adapter {
 }
 ```
 
-## Ordering `rg` flags to search intuitively
+## Understanding and ordering `rg` flags
 
-In `rg`, you can think of each `-g` flag as representing a list of files to include or exclude. 
+Say we have the following directory:
 
-If two `-g` flags, each including a set of files, are passed to `rg`, the files from each flag are combined together in the results. This effectively means that the files of the two flags are OR'd:
+```
+.
+├── a
+├── b
+├── c
+└── d
+```
+
+In `rg`, each `-g` flag is tested against each file, and if matched, either includes or excludes the file based on the glob.
+
+For example, say we have two `-g` flags, each set to include the files they match.
 
 ```bash
-rg --ignore-case -g '*.rb' -g '*.md' -- 'require'
-# Search for `require` in files matching `*.rb` OR in files matching `*.md`
+$ rg --files-with-matches -g 'a' -g 'b' -- ''
+a
+b
 ```
 
-Similarly, if two `-g` flags, each excluding a set of files, are passed to `rg`, the files from each flag are combined together and subtracted from the list of results - also an OR:
+Going through each file:
+
+```
+a => matched by -g 'a' => include
+b => matched by -g 'b' => include
+c => not matched by any glob => exclude
+d => not matched by any glob => exclude
+
+=> return: a,b
+```
+
+For multiple `-g` flag with a `!`, we can take a similar process:
 
 ```bash
-rg --ignore-case -g !'*.rb' -g !'*.md' -- 'require'
-# Search for `require` in files not matching `*.rb` OR in files not matching `*.md`
+$ rg --files-with-matches -g !'a' -g !'b' -- ''
+c
+d
 ```
 
-I find this behavior intuitive, and it matches the behavior of VSCode's global search interface as well. The tricky part is including and excluding files in the same command.
-
-For example, in the VSCode global search interface, say we enter the following input:
+Going through each file:
 
 ```
-[files to include] README.md
-[files to exclude] *.md
+a => matched by -g !'a' => exclude
+b => matched by -g !'b' => exclude
+c => not matched by any glob => include
+d => not matched by any glob => include
+
+=> return: c,d
 ```
 
-The behavior of VSCode is that `README.md` does not show up in the list of results. This behavior is effectively an AND of the results from the include search, and the (total results minus the results of the exclude search). How can we achieve the same with `rg`?
+Things get a bit trickier when a file is matched by more than one glob, for example:
 
-According to the `rg` man page:
+```bash
+$ rg --files-with-matches -g 'a' -g 'b' -g !'a' -- ''
+```
+
+Should this return `a,b` or just `b`? The man pages have an answer:
 
 > If multiple globs match a file or directory, the glob given later in the command line takes precedence.
 
-This means the following command will match VSCode and not show `README.md`:
+Using this info, we can go through each file:
 
-```bash
-rg --ignore-case -g 'README.md' -g '!*.md' -- 'require'
+```
+a => matched by -g 'a' and -g !'a' => last matched by -g !'a' => exclude
+b => matched by -g 'b' => include
+c => not matched by any glob => exclude
+d => not matched by any glob => exclude
+
+=> return b
 ```
 
-While the following command _will_ show `README.md`:
+If we swapped the exclude flag to the begining of the command, we'd get the opposite behavior:
 
 ```bash
-rg --ignore-case -g '!*.md' -g 'README.md' -- 'require'
+$ rg --files-with-matches -g !'a' -g 'b' -g 'a' -- ''
 ```
 
-Stated another way, placing all the exclude `-g` flags at the end of the `rg` command ensures that we have the same AND/OR behavior as VSCode: (results from the include flags) AND (total results minus the results from the exclude flags).
+```
+a => matched by -g 'a' and -g !'a' => last matched by -g 'a' => include
+b => matched by -g 'b' => include
+c => not matched by any glob => exclude
+d => not matched by any glob => exclude
 
-See this [github issue](https://github.com/BurntSushi/ripgrep/issues/809#issuecomment-366366982) for more details on ordering `rg` flags.
+=> return a,b
+```
 
+In VSCode, using the global search interface for a similar query would look as follows:
+
+```
+[files to include] a,b
+[files to exclude] a
+```
+
+Interestingly, this VSCode search would return `a`, not `a,b`. In other words, VSCode matches the command `rg --files-with-matches -g 'a' -g 'b' -g !'a' -- ''` - the variant with the exclude at the _end_.
+
+I personally find this result most intuitive as well, which is why `rg-glob-builder` places all exclude flags at the end.
+
+```
 ## TODO
 - [ ] Adapter for snacks
