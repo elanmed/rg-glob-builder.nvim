@@ -13,9 +13,6 @@ M.fzf_lua_adapter = function(opts)
   local fzf_lua = require "fzf-lua"
 
   local default_opts = {
-    git_icons = true,
-    file_icons = true,
-    color_icons = true,
     actions = fzf_lua.defaults.actions.files,
     previewer = "builtin",
     fn_transform = function(x)
