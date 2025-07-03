@@ -261,6 +261,5 @@ Interestingly, this VSCode search would return `a`, not `a,b`. In other words, V
 
 I personally find this result most intuitive as well, which is why `rg-glob-builder` places all exclude flags at the end.
 
-```
 ## TODO
 - [ ] Adapter for snacks

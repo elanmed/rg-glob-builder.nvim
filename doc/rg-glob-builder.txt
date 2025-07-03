@@ -1,4 +1,4 @@
-*rg-glob-builder.txt*                                Last change: 2025 June 18
+*rg-glob-builder.txt*                                Last change: 2025 July 03
 
 ==============================================================================
 Table of Contents                          *rg-glob-builder-table-of-contents*
@@ -17,6 +17,7 @@ Exports ............................................ |rg-glob-builder-exports|
 `fzf_lua_adapter` .......................... |rg-glob-builder-fzf_lua_adapter|
 `telescope_adapter` ...................... |rg-glob-builder-telescope_adapter|
 Understanding `rg` glob flags  |rg-glob-builder-understanding-`rg`-glob-flags|
+TODO .................................................. |rg-glob-builder-todo|
 
 ==============================================================================
 RG-GLOB-BUILDER.NVIM                    *rg-glob-builder-rg-glob-builder.nvim*
@@ -329,9 +330,11 @@ VSCode matches the command `rg --files-with-matches -g 'a' -g 'b' -g !'a' --
 I personally find this result most intuitive as well, which is why
 `rg-glob-builder` places all exclude flags at the end.
 
->
-    ## TODO
-    - [ ] Adapter for snacks
-<
+
+------------------------------------------------------------------------------
+TODO                                                    *rg-glob-builder-todo*
+
+
+- [ ] Adapter for snacks
 
 vim:tw=78:ts=8:ft=help:norl:
