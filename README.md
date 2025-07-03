@@ -12,7 +12,7 @@ Thankfully, all three of the most popular picker plugins support passing argumen
 - [Native support in `snacks`](https://github.com/folke/snacks.nvim/discussions/461#discussioncomment-11894765)
 - [Native support in `fzf-lua`](https://github.com/ibhagwan/fzf-lua/wiki#how-can-i-restrict-grep-search-to-certain-files)
 
-However, native `rg` arguments are clunky to type and difficult to order [correctly](https://github.com/ElanMedoff/rg-glob-builder.nvim#ordering-rg-flags-to-search-intuitively). So I built `rg-glob-builder.nvim`: a plugin to generate a reliable `rg` command with intuitive flag orderings using a handful of ergonomic custom flags.
+However, native `rg` arguments are clunky to type and difficult to order [correctly](https://github.com/ElanMedoff/rg-glob-builder.nvim#understanding-rg-glob-flags). So I built `rg-glob-builder.nvim`: a plugin to generate a reliable `rg` command with intuitive flag orderings using a handful of ergonomic custom flags.
 
 > Note: the following examples use the `build` function, which is the most straightforward way to generate `rg` flags with `rg-glob-builder`. In practice, I'd recommend using the `fzf_lua_adapter` or `telescope_adapter`, depending on your picker plugin.
 
@@ -162,7 +162,7 @@ require "rg-glob-builder".telescope_adapter {
 }
 ```
 
-## Understanding and ordering `rg` flags
+## Understanding `rg` glob flags
 
 Say we have the following directory:
 

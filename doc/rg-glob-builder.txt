@@ -16,7 +16,7 @@ Exports ............................................ |rg-glob-builder-exports|
 `build` .............................................. |rg-glob-builder-build|
 `fzf_lua_adapter` .......................... |rg-glob-builder-fzf_lua_adapter|
 `telescope_adapter` ...................... |rg-glob-builder-telescope_adapter|
-Understanding and ordering `rg` flags  |rg-glob-builder-understanding-and-ordering-`rg`-flags|
+Understanding `rg` glob flags  |rg-glob-builder-understanding-`rg`-glob-flags|
 
 ==============================================================================
 RG-GLOB-BUILDER.NVIM                    *rg-glob-builder-rg-glob-builder.nvim*
@@ -43,7 +43,7 @@ arguments to `rg` in a live-search:
   <https://github.com/ibhagwan/fzf-lua/wiki#how-can-i-restrict-grep-search-to-certain-files>
 However, native `rg` arguments are clunky to type and difficult to order
 correctly
-<https://github.com/ElanMedoff/rg-glob-builder.nvim#ordering-rg-flags-to-search-intuitively>.
+<https://github.com/ElanMedoff/rg-glob-builder.nvim#understanding-rg-glob-flags>.
 So I built `rg-glob-builder.nvim`: a plugin to generate a reliable `rg`
 command with intuitive flag orderings using a handful of ergonomic custom
 flags.
@@ -230,7 +230,7 @@ EXPORTS                                              *rg-glob-builder-exports*
 <
 
 ------------------------------------------------------------------------------
-UNDERSTANDING AND ORDERING `RG` FLAGS*rg-glob-builder-understanding-and-ordering-`rg`-flags*
+UNDERSTANDING `RG` GLOB FLAGS  *rg-glob-builder-understanding-`rg`-glob-flags*
 
 
 Say we have the following directory:
