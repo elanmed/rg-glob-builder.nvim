@@ -139,6 +139,8 @@ require "rg-glob-builder".build {
 ```
 
 ### `fzf_lua_adapter`
+> NOTE: There are changes in the latest version of `fzf-lua` that break this plugin. Use the commit `e297fea843bd703b162894e880d2ba90b1fe9dae` when installing `fzf-lua` in the meantime.
+
 ```lua
 -- FzfLuaAdapterOpts
 require "rg-glob-builder".fzf_lua_adapter {
