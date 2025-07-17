@@ -33,7 +33,8 @@ M.fzf_lua_adapter = function(opts)
   -- fzf-lua/lua/fzf-lua/providers/grep.lua
   opts.fzf_lua_opts = fzf_lua.core.set_fzf_field_index(opts.fzf_lua_opts)
 
-  return fzf_lua.fzf_live(function(prompt)
+  return fzf_lua.fzf_live(function(prompt_fn)
+    local prompt = prompt_fn[1]
     local glob_flags = rg_glob_builder.build(
       vim.tbl_deep_extend(
         "force",
@@ -43,7 +44,7 @@ M.fzf_lua_adapter = function(opts)
     )
 
     if glob_flags == nil and opts.rg_glob_builder_opts.nil_unless_trailing_space then
-      return nil
+      return ""
     end
 
     local cmd_tbl = vim.iter {
