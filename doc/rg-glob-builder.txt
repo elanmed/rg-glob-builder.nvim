@@ -25,6 +25,8 @@ RG-GLOB-BUILDER.NVIM                    *rg-glob-builder-rg-glob-builder.nvim*
 
 A Neovim plugin to generate intuitive glob patterns for searching with `rg`.
 
+demo <https://elanmed.dev/nvim-plugins/rg-glob-builder.png>
+
 
 ------------------------------------------------------------------------------
 INTRO                                                  *rg-glob-builder-intro*

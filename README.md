@@ -2,6 +2,8 @@
 
 A Neovim plugin to generate intuitive glob patterns for searching with `rg`.
 
+![demo](https://elanmed.dev/nvim-plugins/rg-glob-builder.png)
+
 ## Intro
 
 When searching globally with a picker plugin, it can often be helpful to refine your search as you see the results. 
