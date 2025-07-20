@@ -59,7 +59,7 @@ flags.
 SEARCHING BY EXTENSION                *rg-glob-builder-searching-by-extension*
 
 >lua
-    require "rg-glob-builder".build { prompt = "~require~ -e rb !md" }
+    require "rg-glob-builder".build "~require~ -e rb !md"
     -- returns: "--ignore-case -g '*.rb' -g !'*.md' -- 'require'"
     -- prefixes the extension with `*.`
 <
@@ -68,7 +68,7 @@ SEARCHING BY EXTENSION                *rg-glob-builder-searching-by-extension*
 SEARCHING BY FILE                          *rg-glob-builder-searching-by-file*
 
 >lua
-    build { prompt = "~require~ -f init.lua" }
+    build "~require~ -f init.lua"
     -- returns: "--ignore-case -g 'init.lua' -- 'require'"
 <
 
@@ -76,7 +76,7 @@ SEARCHING BY FILE                          *rg-glob-builder-searching-by-file*
 SEARCHING IN A DIRECTORY            *rg-glob-builder-searching-in-a-directory*
 
 >lua
-    require "rg-glob-builder".build { prompt = "~require~ -d plugins" }
+    require "rg-glob-builder".build "~require~ -d plugins"
     -- returns: "--ignore-case -g '**/plugins/**' -- 'require'"
 <
 
@@ -84,7 +84,7 @@ SEARCHING IN A DIRECTORY            *rg-glob-builder-searching-in-a-directory*
 MULTIPLE OF THE SAME FLAG IS SUPPORTED*rg-glob-builder-multiple-of-the-same-flag-is-supported*
 
 >lua
-    require "rg-glob-builder".build { prompt = "~require~ -e rb -f init.lua -e lua" }
+    require "rg-glob-builder".build "~require~ -e rb -f init.lua -e lua"
     -- returns: "--ignore-case -g 'init.lua' -g '*.rb' -g '*.lua' -- 'require'"
 <
 
@@ -92,13 +92,13 @@ MULTIPLE OF THE SAME FLAG IS SUPPORTED*rg-glob-builder-multiple-of-the-same-flag
 CASE-SENSITIVE AND WHOLE-WORD SEARCHING*rg-glob-builder-case-sensitive-and-whole-word-searching*
 
 >lua
-    require "rg-glob-builder".build { prompt = "~require~ -c -w" }
+    require "rg-glob-builder".build "~require~ -c -w"
     -- returns: "--case-sensitive --word-rexegp -- 'require'"
 <
 with later flags overriding earlier ones:
 
 >lua
-    require "rg-glob-builder".build { prompt = "~require~ -c -w -nc -nw" }
+    require "rg-glob-builder".build "~require~ -c -w -nc -nw"
     -- returns: "--ignore-case -- 'require'"
     -- Searching by partial-word is the default, no flag necessary
 <
@@ -107,7 +107,7 @@ with later flags overriding earlier ones:
 GLOBS ARE PASSED ALONG                *rg-glob-builder-globs-are-passed-along*
 
 >lua
-    require "rg-glob-builder".build { prompt = "~require~ -d plugin* -f !*.test.*" }
+    require "rg-glob-builder".build "~require~ -d plugin* -f !*.test.*"
     -- returns "--ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'"
 <
 
@@ -159,13 +159,13 @@ TYPES                                                 *rg-glob-builder-types-*
 
 
 >lua
-    --- @class RgGlobBuilderSetupOpts
+    --- @class RgGlobBuilderOpts
     --- @field pattern_delimiter? string Defaults to "~"
-    --- @field custom_flags? RgPatternBuilderSetupOptsCustomFlags
+    --- @field custom_flags? RgGlobBuilderOptsCustomFlags
     --- @field nil_unless_trailing_space? boolean Defaults to `false`
     --- @field auto_quote? boolean Defualts to `true`
     
-    --- @class RgPatternBuilderSetupOptsCustomFlags
+    --- @class RgGlobBuilderOptsCustomFlags
     --- @field extension? string Defaults to "-e"
     --- @field file? string Defaults to "-f"
     --- @field directory? string Defaults to "-d"
@@ -176,14 +176,11 @@ TYPES                                                 *rg-glob-builder-types-*
     
     --- @class FzfLuaAdapterOpts
     --- @field fzf_lua_opts table
-    --- @field rg_glob_builder_opts RgGlobBuilderSetupOpts
+    --- @field rg_glob_builder_opts RgGlobBuilderOpts
     
     --- @class TelescopeAdapterOpts
     --- @field telescope_opts table
-    --- @field rg_glob_builder_opts RgGlobBuilderSetupOpts
-    
-    --- @class RgGlobBuilderBuildOpts: RgGlobBuilderSetupOpts
-    --- @field prompt string
+    --- @field rg_glob_builder_opts RgGlobBuilderOpts
 <
 
 ------------------------------------------------------------------------------
@@ -196,10 +193,9 @@ EXPORTS                                              *rg-glob-builder-exports*
 
 >lua
     -- RgGlobBuilderBuildOpts
-    require "rg-glob-builder".build {
-      prompt = "" -- The primary pattern to search
+    require "rg-glob-builder".build("[prompt]", {
       -- ... RgGlobBuilderSetupOpts
-    }
+    })
 <
 
                                                                               
