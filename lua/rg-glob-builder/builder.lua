@@ -56,24 +56,23 @@ local function construct_rg_flags(opts)
 end
 
 --- @class ParseSearchOpts
---- @field pattern_delimiter? string
 --- @field auto_quote? boolean
+--- @field prompt string
 
---- @param prompt string
 --- @param opts ParseSearchOpts
-local function parse_search(prompt, opts)
-  local pattern_delimiter = h.default(opts.pattern_delimiter, "~")
-  local end_tilde_index = prompt:find(pattern_delimiter, 2)
-  local end_index = end_tilde_index or (#prompt + 1)
-  local search = prompt:sub(2, end_index - 1)
-
-  local formatted_search = search
+local function parse_search(opts)
   local auto_quote = h.default(opts.auto_quote, true)
+
+  -- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-custom-glob-parsing-for-git-grep
+  local search, flags_prompt = opts.prompt:match "(.-)%s-%-%-(.*)"
+  search = search or ""
+  flags_prompt = flags_prompt or ""
+
   if auto_quote then
-    formatted_search = string.format("'%s'", formatted_search)
+    search = string.format("'%s'", search)
   end
 
-  return { search = formatted_search, search_end_index = end_index, }
+  return { search = search, flags_prompt = flags_prompt, }
 end
 
 --- @class ParseFlagsOpts
@@ -145,14 +144,15 @@ M.build = function(prompt, opts)
     return nil
   end
 
-  local parsed_search = parse_search(prompt, {
-    pattern_delimiter = opts.pattern_delimiter,
-    auto_quote = opts.auto_quote,
-  })
+  -- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-custom-glob-parsing-for-git-grep
+  local search, flags_prompt = prompt:match "(.-)%s-%-%-(.*)"
+  search = search or ""
+  if h.default(opts.auto_quote, true) then
+    search = string.format("'%s'", search)
+  end
+  flags_prompt = flags_prompt or ""
 
-  local flags_prompt = prompt:sub(parsed_search.search_end_index + 1)
-  local nil_unless_trailing_space = h.default(opts.nil_unless_trailing_space, false)
-  if nil_unless_trailing_space and flags_prompt:sub(-1) ~= " " then
+  if h.default(opts.nil_unless_trailing_space, false) and flags_prompt:sub(-1) ~= " " then
     return nil
   end
 
@@ -191,7 +191,7 @@ M.build = function(prompt, opts)
     include_flag,
     negate_flag,
     "--",
-    parsed_search.search,
+    search,
   }:flatten():totable()
 
   return table.concat(cmd, " ")

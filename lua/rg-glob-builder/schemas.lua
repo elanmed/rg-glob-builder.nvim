@@ -29,7 +29,6 @@ M.validate = function(opts)
 end
 
 --- @class RgGlobBuilderOpts
---- @field pattern_delimiter? string The single-char string to act as the delimiter for the pattern to pass to rg. Defaults to "~"
 --- @field nil_unless_trailing_space? boolean Return `nil` unless the final character is a trailing space. When updating the flags, this option will maintain the current search results until the update is complete. Defaults to `false`
 --- @field auto_quote? boolean Quote the rg pattern and glob flags in single quotes. Defaults to true, except for in the `fzf_lua_adapter`.
 --- @field custom_flags? RgGlobBuilderOptsCustomFlags Custom flags
@@ -48,12 +47,6 @@ M.opts_schema = {
   type = "table",
   optional = true,
   entries = {
-    pattern_delimiter = {
-      type = function(val)
-        return type(val) == "string" and #val == 1
-      end,
-      optional = true,
-    },
     nil_unless_trailing_space = { type = "boolean", optional = true, },
     auto_quote = { type = "boolean", optional = true, },
     custom_flags = {

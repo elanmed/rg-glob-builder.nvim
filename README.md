@@ -18,45 +18,45 @@ However, native `rg` arguments are clunky to type and difficult to order [correc
 
 #### Searching by extension
 ```lua
-require "rg-glob-builder".build "~require~ -e rb !md"
+require "rg-glob-builder".build "require -- -e rb !md"
 -- returns: "--ignore-case -g '*.rb' -g !'*.md' -- 'require'"
 -- prefixes the extension with `*.`
 ```
 
 #### Searching by file
 ```lua
-build "~require~ -f init.lua"
+build "require -- -f init.lua"
 -- returns: "--ignore-case -g 'init.lua' -- 'require'"
 ```
 
 #### Searching in a directory
 ```lua
-require "rg-glob-builder".build "~require~ -d plugins"
+require "rg-glob-builder".build "require -- -d plugins"
 -- returns: "--ignore-case -g '**/plugins/**' -- 'require'"
 ```
 
 #### Multiple of the same flag is supported
 ```lua
-require "rg-glob-builder".build "~require~ -e rb -f init.lua -e lua"
+require "rg-glob-builder".build "require -- -e rb -f init.lua -e lua"
 -- returns: "--ignore-case -g 'init.lua' -g '*.rb' -g '*.lua' -- 'require'"
 ```
 
 #### Case-sensitive and whole-word searching
 ```lua
-require "rg-glob-builder".build "~require~ -c -w"
+require "rg-glob-builder".build "require -- -c -w"
 -- returns: "--case-sensitive --word-rexegp -- 'require'"
 ```
 
 with later flags overriding earlier ones:
 ```lua
-require "rg-glob-builder".build "~require~ -c -w -nc -nw"
+require "rg-glob-builder".build "require -- -c -w -nc -nw"
 -- returns: "--ignore-case -- 'require'"
 -- Searching by partial-word is the default, no flag necessary
 ```
 
 #### Globs are passed along
 ```lua
-require "rg-glob-builder".build "~require~ -d plugin* -f !*.test.*"
+require "rg-glob-builder".build "require -- -d plugin* -f !*.test.*"
 -- returns "--ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'"
 ```
 
@@ -90,8 +90,6 @@ require "rg-glob-builder".setup {
   -- Return `nil` unless the final character is a trailing space. When updating the flags, 
   -- this option will maintain the current search results until the update is complete
   nil_unless_trailing_space = false,
-  -- The single-char string to act as the delimiter for the pattern to pass to rg
-  pattern_delimiter = "~",
   -- Quote the rg pattern and glob flags in single quotes. Defaults to true, except for in 
   -- the `fzf_lua_adapter`
   auto_quote = true
@@ -101,7 +99,6 @@ require "rg-glob-builder".setup {
 ## Types 
 ```lua
 --- @class RgGlobBuilderOpts
---- @field pattern_delimiter? string Defaults to "~"
 --- @field custom_flags? RgGlobBuilderOptsCustomFlags
 --- @field nil_unless_trailing_space? boolean Defaults to `false`
 --- @field auto_quote? boolean Defualts to `true`
