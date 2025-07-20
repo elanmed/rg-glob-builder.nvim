@@ -66,17 +66,6 @@ T["build"]["setup opts"]["directory"] = function()
     [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
   )
 end
-T["build"]["setup opts"]["nil_unless_trailing_space"] = function()
-  child.lua [[ M.setup { nil_unless_trailing_space = true, } ]]
-  expect.equality(
-    child.lua [[ return M.build "require --"]],
-    vim.NIL
-  )
-  expect.equality(
-    child.lua [[ return M.build "require -- "]],
-    [[--ignore-case -- 'require']]
-  )
-end
 T["build"]["setup opts"]["auto quote"] = function()
   child.lua [[ M.setup { auto_quote = false, } ]]
   expect.equality(
@@ -132,16 +121,6 @@ T["build"]["local opts"]["directory"] = function()
   expect.equality(
     child.lua [[ return M.build("require -- --dir plugins !feature_*", { custom_flags = { directory = "--dir", }, })]],
     [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
-  )
-end
-T["build"]["local opts"]["nil_unless_trailing_space"] = function()
-  expect.equality(
-    child.lua [[ return M.build("require --", { nil_unless_trailing_space = true, })]],
-    vim.NIL
-  )
-  expect.equality(
-    child.lua [[ return M.build "require -- "]],
-    [[--ignore-case -- 'require']]
   )
 end
 T["build"]["local opts"]["auto quote"] = function()
@@ -202,17 +181,6 @@ T["build"]["local opts overriding setup opts"]["directory"] = function()
   expect.equality(
     child.lua [[ return M.build("require -- --dir plugins !feature_*", { custom_flags = { directory = "--dir", }, })]],
     [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
-  )
-end
-T["build"]["local opts overriding setup opts"]["nil_unless_trailing_space"] = function()
-  child.lua [[ M.setup { nil_unless_trailing_space = false, } ]]
-  expect.equality(
-    child.lua [[ return M.build("require --", { nil_unless_trailing_space = true, })]],
-    vim.NIL
-  )
-  expect.equality(
-    child.lua [[ return M.build "require -- "]],
-    [[--ignore-case -- 'require']]
   )
 end
 T["build"]["local opts overriding setup opts"]["auto quote"] = function()
@@ -384,6 +352,28 @@ T["build"]["default opts"]["directory"]["should include and exclude dirs"] = fun
   )
 end
 
+T["pending prompts"] = function()
+  expect.equality(
+    child.lua [[ return M.build(nil)]],
+    [[--ignore-case -- '']]
+  )
+  expect.equality(
+    child.lua [[ return M.build ""]],
+    [[--ignore-case -- '']]
+  )
+  expect.equality(
+    child.lua [[ return M.build "require"]],
+    [[--ignore-case -- '']]
+  )
+  expect.equality(
+    child.lua [[ return M.build "require -"]],
+    [[--ignore-case -- '']]
+  )
+  expect.equality(
+    child.lua [[ return M.build "require --"]],
+    [[--ignore-case -- 'require']]
+  )
+end
 T["kitchen sink"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -e rb md !lua -d plugins !feature_* -f !*.test.* *_spec.rb"]],
