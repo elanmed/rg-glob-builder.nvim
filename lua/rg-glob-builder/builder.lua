@@ -61,7 +61,7 @@ end
 
 --- @param prompt string
 --- @param opts ParseSearchOpts
-M._parse_search = function(prompt, opts)
+local function parse_search(prompt, opts)
   local pattern_delimiter = h.default(opts.pattern_delimiter, "~")
   local end_tilde_index = prompt:find(pattern_delimiter, 2)
   local end_index = end_tilde_index or (#prompt + 1)
@@ -145,7 +145,7 @@ M.build = function(prompt, opts)
     return nil
   end
 
-  local parsed_search = M._parse_search(prompt, {
+  local parsed_search = parse_search(prompt, {
     pattern_delimiter = opts.pattern_delimiter,
     auto_quote = opts.auto_quote,
   })
@@ -153,7 +153,6 @@ M.build = function(prompt, opts)
   local flags_prompt = prompt:sub(parsed_search.search_end_index + 1)
   local nil_unless_trailing_space = h.default(opts.nil_unless_trailing_space, false)
   if nil_unless_trailing_space and flags_prompt:sub(-1) ~= " " then
-    vim.notify("waiting for a trailing space...", vim.log.levels.INFO)
     return nil
   end
 

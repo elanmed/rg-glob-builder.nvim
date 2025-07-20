@@ -1,4 +1,4 @@
-*rg-glob-builder.txt*                                Last change: 2025 July 17
+*rg-glob-builder.txt*                                Last change: 2025 July 19
 
 ==============================================================================
 Table of Contents                          *rg-glob-builder-table-of-contents*

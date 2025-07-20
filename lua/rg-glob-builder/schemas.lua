@@ -32,9 +32,9 @@ end
 --- @field pattern_delimiter? string The single-char string to act as the delimiter for the pattern to pass to rg. Defaults to "~"
 --- @field nil_unless_trailing_space? boolean Return `nil` unless the final character is a trailing space. When updating the flags, this option will maintain the current search results until the update is complete. Defaults to `false`
 --- @field auto_quote? boolean Quote the rg pattern and glob flags in single quotes. Defaults to true, except for in the `fzf_lua_adapter`.
---- @field custom_flags? RgPatternBuilderSetupOptsCustomFlags Custom flags
+--- @field custom_flags? RgGlobBuilderOptsCustomFlags Custom flags
 
---- @class RgPatternBuilderSetupOptsCustomFlags
+--- @class RgGlobBuilderOptsCustomFlags
 --- @field extension? string The flag to include or negate an extension to the glob pattern. Extensions are prefixed internally with "*.". Defaults to "-e"
 --- @field file? string The flag to include or negate a file to the glob pattern. Files are passed without modification to the glob. Defaults to "-f"
 --- @field directory? string The flag to include or negate a directory to the glob pattern. Extensions are updated internally to "**/[directory]/**". Defaults to "-d"
@@ -75,8 +75,8 @@ M.opts_schema = {
 }
 
 --- @class FzfLuaAdapterOpts
---- @field fzf_lua_opts? table
---- @field rg_glob_builder_opts? RgGlobBuilderOpts
+--- @field fzf_lua_opts table
+--- @field rg_glob_builder_opts RgGlobBuilderOpts
 
 --- @type Schema
 M.fzf_lua_adapter_opts_schema = {
