@@ -1,4 +1,4 @@
-local helpers = require "rg-glob-builder.helpers"
+local h = require "rg-glob-builder.helpers"
 
 local M = {}
 
@@ -42,7 +42,7 @@ local function construct_rg_flags(opts)
 
   if vim.tbl_count(file_ext_dir_tbl) > 0 then
     local negate_symbol = opts.negate and "!" or ""
-    local auto_quote = helpers.default(opts.auto_quote, true)
+    local auto_quote = h.default(opts.auto_quote, true)
     local quote_symbol = auto_quote and "'" or ""
     local flag = ""
 
@@ -56,19 +56,19 @@ local function construct_rg_flags(opts)
 end
 
 --- @class ParseSearchOpts
---- @field prompt string
 --- @field pattern_delimiter? string
 --- @field auto_quote? boolean
 
+--- @param prompt string
 --- @param opts ParseSearchOpts
-local function parse_search(opts)
-  local pattern_delimiter = helpers.default(opts.pattern_delimiter, "~")
-  local end_tilde_index = opts.prompt:find(pattern_delimiter, 2)
-  local end_index = end_tilde_index or (#opts.prompt + 1)
-  local search = opts.prompt:sub(2, end_index - 1)
+M._parse_search = function(prompt, opts)
+  local pattern_delimiter = h.default(opts.pattern_delimiter, "~")
+  local end_tilde_index = prompt:find(pattern_delimiter, 2)
+  local end_index = end_tilde_index or (#prompt + 1)
+  local search = prompt:sub(2, end_index - 1)
 
   local formatted_search = search
-  local auto_quote = helpers.default(opts.auto_quote, true)
+  local auto_quote = h.default(opts.auto_quote, true)
   if auto_quote then
     formatted_search = string.format("'%s'", formatted_search)
   end
@@ -99,13 +99,13 @@ local function parse_flags(opts)
     case_flag = { "--ignore-case", },
     word_flag = { nil, },
   }
-  local directory_flag = helpers.default(opts.directory_flag, "-d")
-  local extension_flag = helpers.default(opts.extension_flag, "-e")
-  local file_flag = helpers.default(opts.file_flag, "-f")
-  local case_sensitive_flag = helpers.default(opts.case_sensitive_flag, "-c")
-  local ignore_case_flag = helpers.default(opts.ignore_case_flag, "-nc")
-  local whole_word_flag = helpers.default(opts.whole_word_flag, "-w")
-  local partial_word_flag = helpers.default(opts.partial_word_flag, "-nw")
+  local directory_flag = h.default(opts.directory_flag, "-d")
+  local extension_flag = h.default(opts.extension_flag, "-e")
+  local file_flag = h.default(opts.file_flag, "-f")
+  local case_sensitive_flag = h.default(opts.case_sensitive_flag, "-c")
+  local ignore_case_flag = h.default(opts.ignore_case_flag, "-nc")
+  local whole_word_flag = h.default(opts.whole_word_flag, "-w")
+  local partial_word_flag = h.default(opts.partial_word_flag, "-nw")
 
   for _, token in ipairs(opts.tokens) do
     if token == case_sensitive_flag then
@@ -138,30 +138,27 @@ local function parse_flags(opts)
   return parsed
 end
 
---- @class RgGlobBuilderBuildOpts: RgGlobBuilderSetupOpts
---- @field prompt string
-
---- @param opts RgGlobBuilderBuildOpts
-M.build = function(opts)
-  if opts.prompt == nil or opts.prompt == "" then
+--- @param prompt string
+--- @param opts RgGlobBuilderOpts
+M.build = function(prompt, opts)
+  if prompt == nil or prompt == "" then
     return nil
   end
 
-  local parsed_search = parse_search {
-    prompt = opts.prompt,
+  local parsed_search = M._parse_search(prompt, {
     pattern_delimiter = opts.pattern_delimiter,
     auto_quote = opts.auto_quote,
-  }
+  })
 
-  local flags_prompt = opts.prompt:sub(parsed_search.search_end_index + 1)
-  local nil_unless_trailing_space = helpers.default(opts.nil_unless_trailing_space, false)
+  local flags_prompt = prompt:sub(parsed_search.search_end_index + 1)
+  local nil_unless_trailing_space = h.default(opts.nil_unless_trailing_space, false)
   if nil_unless_trailing_space and flags_prompt:sub(-1) ~= " " then
     vim.notify("waiting for a trailing space...", vim.log.levels.INFO)
     return nil
   end
 
-  local tokens = helpers.split(flags_prompt)
-  local custom_flags = helpers.default(opts.custom_flags, {})
+  local tokens = h.split(flags_prompt)
+  local custom_flags = h.default(opts.custom_flags, {})
   local flags = parse_flags {
     tokens = tokens,
     directory_flag = custom_flags.directory,

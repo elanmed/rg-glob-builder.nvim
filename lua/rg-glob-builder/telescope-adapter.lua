@@ -1,21 +1,24 @@
 local M = {}
 
 -- based on https://github.com/nvim-telescope/telescope.nvim/pull/670
-
 --- @param opts TelescopeAdapterOpts
 M.telescope_adapter = function(opts)
+  -- can assume the following are non-nil:
+  -- opts
+  -- opts.rg_glob_builder_opts
+  -- opts.telescope_opts
+
   local telescope_ok = pcall(require, "telescope")
   if not telescope_ok then
     error "rg_glob_builder.telescope_adapter was called but telescope is not installed!"
   end
-
 
   local make_entry = require "telescope.make_entry"
   local pickers = require "telescope.pickers"
   local sorters = require "telescope.sorters"
   local finders = require "telescope.finders"
   local config_values = require "telescope.config".values
-  local helpers = require "rg-glob-builder.helpers"
+  local h = require "rg-glob-builder.helpers"
   local rg_glob_builder = require "rg-glob-builder.builder"
 
   local default_opts = {
@@ -27,17 +30,18 @@ M.telescope_adapter = function(opts)
   local function get_cmd(prompt)
     local vimgrep_flags = vim.deepcopy(opts.telescope_opts.vimgrep_arguments)
     local glob_flags = rg_glob_builder.build(
+      prompt,
       vim.tbl_deep_extend(
         "force",
         opts.rg_glob_builder_opts,
-        { prompt = prompt, auto_quote = false, }
+        { auto_quote = false, }
       )
     )
     if glob_flags == nil and opts.rg_glob_builder_opts.nil_unless_trailing_space then
       return nil
     end
 
-    local split_glob_flags = helpers.split(glob_flags or "")
+    local split_glob_flags = h.split(glob_flags or "")
 
     local cmd_tbl = vim.iter {
       vimgrep_flags,
