@@ -39,15 +39,15 @@ M.telescope_adapter = function(opts)
   local function get_cmd(prompt)
     local search, flags_prompt = prompt:match "(.-)%s-%-%-(.*)"
     if search == nil then
-      vim.notify("waiting for a trailing --", vim.log.levels.INFO)
+      print "waiting for a trailing --"
       return nil
     end
 
     if flags_prompt:sub(-1) ~= " " then
       if prev_rg_cmd_str == init_rg_cmd_str then
-        vim.notify(init_rg_cmd_str, vim.log.levels.INFO)
+        print(init_rg_cmd_str)
       else
-        vim.notify("REPLAY: " .. prev_rg_cmd_str, vim.log.levels.INFO)
+        print("REPLAY: " .. prev_rg_cmd_str)
       end
 
       local prev_rg_cmd_tbl = h.split(prev_rg_cmd_str)
@@ -71,7 +71,7 @@ M.telescope_adapter = function(opts)
 
     local cmd_str = table.concat(cmd_tbl, " ")
     prev_rg_cmd_str = cmd_str
-    vim.notify(cmd_str, vim.log.levels.INFO)
+    print(cmd_str)
 
     return cmd_tbl
   end

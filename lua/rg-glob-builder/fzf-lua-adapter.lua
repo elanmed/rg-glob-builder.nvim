@@ -69,15 +69,15 @@ M.fzf_lua_adapter = function(opts)
     local prompt = prompt_tbl[1]
     local search, flags_prompt = prompt:match "(.-)%s-%-%-(.*)"
     if search == nil then
-      vim.notify("waiting for a trailing --", vim.log.levels.INFO)
+      print "waiting for a trailing --"
       return ""
     end
 
     if flags_prompt:sub(-1) ~= " " then
       if prev_rg_cmd == initial_rg_cmd then
-        vim.notify(prev_rg_cmd, vim.log.levels.INFO)
+        print(prev_rg_cmd)
       else
-        vim.notify("REPLAY: " .. prev_rg_cmd, vim.log.levels.INFO)
+        print("REPLAY: " .. prev_rg_cmd)
       end
       return prev_rg_cmd
     end
@@ -90,7 +90,7 @@ M.fzf_lua_adapter = function(opts)
     -- based on the default grep rg_opts
     local cmd = base_rg_cmd .. glob_flags
     prev_rg_cmd = cmd
-    vim.notify(cmd, vim.log.levels.INFO)
+    print(cmd)
 
     return cmd
   end, opts.fzf_lua_opts)
