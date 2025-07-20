@@ -11,15 +11,9 @@ local validate = require "rg-glob-builder.validator".validate
 M.validate = function(opts)
   if not validate(opts.schema, opts.value) then
     vim.notify(
-      string.format(
-        ("Malformed opts passed to %s! Expected to match schema: %s, received %s"):format(
-          opts.name,
-          vim.inspect(opts.schema),
-          vim.inspect(opts.value)
-        ),
-        vim.inspect(opts.schema),
-        vim.inspect(opts.value)
-      ),
+      "Malformed opts passed to: " .. opts.name .. "\n" ..
+      "Expected to receive:\n" .. vim.inspect(opts.schema) .. "\n" ..
+      "Received:\n" .. vim.inspect(opts.value),
       vim.log.levels.ERROR
     )
     return false
