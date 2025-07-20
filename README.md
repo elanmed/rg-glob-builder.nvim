@@ -20,12 +20,12 @@ However, native `rg` arguments are clunky to type and difficult to order [correc
 ```lua
 require "rg-glob-builder".build "require -- -e rb !md"
 -- returns: "--ignore-case -g '*.rb' -g !'*.md' -- 'require'"
--- prefixes the extension with `*.`
+-- transforms extensions as `*.[extension]`
 ```
 
 #### Searching by file
 ```lua
-build "require -- -f init.lua"
+require "rg-glob-builder".build "require -- -f init.lua"
 -- returns: "--ignore-case -g 'init.lua' -- 'require'"
 ```
 
@@ -33,6 +33,7 @@ build "require -- -f init.lua"
 ```lua
 require "rg-glob-builder".build "require -- -d plugins"
 -- returns: "--ignore-case -g '**/plugins/**' -- 'require'"
+-- transforms directories as `**/[directory]/**`
 ```
 
 #### Multiple of the same flag is supported
@@ -51,13 +52,13 @@ with later flags overriding earlier ones:
 ```lua
 require "rg-glob-builder".build "require -- -c -w -nc -nw"
 -- returns: "--ignore-case -- 'require'"
--- Searching by partial-word is the default, no flag necessary
+-- searching by partial-word is the default, no flag necessary
 ```
 
 #### Globs are passed along
 ```lua
 require "rg-glob-builder".build "require -- -d plugin* -f !*.test.*"
--- returns "--ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'"
+-- returns: "--ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'"
 ```
 
 ## Setup
@@ -87,9 +88,6 @@ require "rg-glob-builder".setup {
     -- Searching by partial word is the default behavior in rg
     partial_word = "-nw",
   },
-  -- Return `nil` unless the final character is a trailing space. When updating the flags, 
-  -- this option will maintain the current search results until the update is complete
-  nil_unless_trailing_space = false,
   -- Quote the rg pattern and glob flags in single quotes. Defaults to true, except for in 
   -- the `fzf_lua_adapter`
   auto_quote = true
@@ -100,7 +98,6 @@ require "rg-glob-builder".setup {
 ```lua
 --- @class RgGlobBuilderOpts
 --- @field custom_flags? RgGlobBuilderOptsCustomFlags
---- @field nil_unless_trailing_space? boolean Defaults to `false`
 --- @field auto_quote? boolean Defualts to `true`
 
 --- @class RgGlobBuilderOptsCustomFlags

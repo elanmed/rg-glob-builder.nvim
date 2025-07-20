@@ -29,7 +29,6 @@ M.validate = function(opts)
 end
 
 --- @class RgGlobBuilderOpts
---- @field nil_unless_trailing_space? boolean Return `nil` unless the final character is a trailing space. When updating the flags, this option will maintain the current search results until the update is complete. Defaults to `false`
 --- @field auto_quote? boolean Quote the rg pattern and glob flags in single quotes. Defaults to true, except for in the `fzf_lua_adapter`.
 --- @field custom_flags? RgGlobBuilderOptsCustomFlags Custom flags
 
@@ -47,7 +46,6 @@ M.opts_schema = {
   type = "table",
   optional = true,
   entries = {
-    nil_unless_trailing_space = { type = "boolean", optional = true, },
     auto_quote = { type = "boolean", optional = true, },
     custom_flags = {
       type = "table",

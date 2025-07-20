@@ -3,10 +3,10 @@ local M = {}
 -- based on https://github.com/nvim-telescope/telescope.nvim/pull/670
 --- @param opts TelescopeAdapterOpts
 M.telescope_adapter = function(opts)
-  -- can assume the following are non-nil:
-  -- opts
-  -- opts.rg_glob_builder_opts
-  -- opts.telescope_opts
+  -- can assume:
+  -- opts is a table
+  -- opts.rg_glob_builder_opts is a table
+  -- opts.telescope_opts is a table
 
   local telescope_ok = pcall(require, "telescope")
   if not telescope_ok then
@@ -26,9 +26,34 @@ M.telescope_adapter = function(opts)
     entry_maker = make_entry.gen_from_vimgrep(opts.telescope_opts),
   }
   opts.telescope_opts = vim.tbl_deep_extend("force", default_opts, opts.telescope_opts)
+  local vimgrep_flags = vim.deepcopy(opts.telescope_opts.vimgrep_arguments)
+
+  local init_rg_cmd_tbl = vim.iter {
+    vimgrep_flags,
+    "--",
+    "''",
+  }:flatten():totable()
+  local init_rg_cmd_str = table.concat(init_rg_cmd_tbl, " ")
+  local prev_rg_cmd_str = init_rg_cmd_str
 
   local function get_cmd(prompt)
-    local vimgrep_flags = vim.deepcopy(opts.telescope_opts.vimgrep_arguments)
+    local search, flags_prompt = prompt:match "(.-)%s-%-%-(.*)"
+    if search == nil then
+      vim.notify("waiting for a trailing --", vim.log.levels.INFO)
+      return nil
+    end
+
+    if flags_prompt:sub(-1) ~= " " then
+      if prev_rg_cmd_str == init_rg_cmd_str then
+        vim.notify(init_rg_cmd_str, vim.log.levels.INFO)
+      else
+        vim.notify("REPLAY: " .. prev_rg_cmd_str, vim.log.levels.INFO)
+      end
+
+      local prev_rg_cmd_tbl = h.split(prev_rg_cmd_str)
+      return prev_rg_cmd_tbl
+    end
+
     local glob_flags = rg_glob_builder.build(
       prompt,
       vim.tbl_deep_extend(
@@ -37,18 +62,16 @@ M.telescope_adapter = function(opts)
         { auto_quote = false, }
       )
     )
-    if glob_flags == nil and opts.rg_glob_builder_opts.nil_unless_trailing_space then
-      return nil
-    end
 
-    local split_glob_flags = h.split(glob_flags or "")
-
+    local split_glob_flags = h.split(glob_flags)
     local cmd_tbl = vim.iter {
       vimgrep_flags,
       split_glob_flags,
     }:flatten():totable()
-    local cmd = table.concat(cmd_tbl, " ")
-    vim.notify(cmd, vim.log.levels.INFO)
+
+    local cmd_str = table.concat(cmd_tbl, " ")
+    prev_rg_cmd_str = cmd_str
+    vim.notify(cmd_str, vim.log.levels.INFO)
 
     return cmd_tbl
   end

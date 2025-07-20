@@ -55,26 +55,6 @@ local function construct_rg_flags(opts)
   return nil
 end
 
---- @class ParseSearchOpts
---- @field auto_quote? boolean
---- @field prompt string
-
---- @param opts ParseSearchOpts
-local function parse_search(opts)
-  local auto_quote = h.default(opts.auto_quote, true)
-
-  -- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-custom-glob-parsing-for-git-grep
-  local search, flags_prompt = opts.prompt:match "(.-)%s-%-%-(.*)"
-  search = search or ""
-  flags_prompt = flags_prompt or ""
-
-  if auto_quote then
-    search = string.format("'%s'", search)
-  end
-
-  return { search = search, flags_prompt = flags_prompt, }
-end
-
 --- @class ParseFlagsOpts
 --- @field tokens string[]
 --- @field directory_flag string
@@ -140,10 +120,9 @@ end
 --- @param prompt string
 --- @param opts RgGlobBuilderOpts
 M.build = function(prompt, opts)
-  if prompt == nil or prompt == "" then
-    return nil
-  end
+  -- can assume opts is a table
 
+  prompt = h.default(prompt, "")
   -- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-custom-glob-parsing-for-git-grep
   local search, flags_prompt = prompt:match "(.-)%s-%-%-(.*)"
   search = search or ""
@@ -151,10 +130,6 @@ M.build = function(prompt, opts)
     search = string.format("'%s'", search)
   end
   flags_prompt = flags_prompt or ""
-
-  if h.default(opts.nil_unless_trailing_space, false) and flags_prompt:sub(-1) ~= " " then
-    return nil
-  end
 
   local tokens = h.split(flags_prompt)
   local custom_flags = h.default(opts.custom_flags, {})

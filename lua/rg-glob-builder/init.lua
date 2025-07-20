@@ -16,9 +16,7 @@ end
 --- @param opts RgGlobBuilderOpts
 M.build = function(prompt, opts)
   local schemas = require "rg-glob-builder.schemas"
-  if not schemas.validate { schema = { type = "string", }, value = prompt, name = "rg-glob-builder.build", } or
-      not schemas.validate { schema = schemas.opts_schema, value = opts, name = "rg-glob-builder.build", }
-  then
+  if not schemas.validate { schema = schemas.opts_schema, value = opts, name = "rg-glob-builder.build", } then
     return
   end
 
