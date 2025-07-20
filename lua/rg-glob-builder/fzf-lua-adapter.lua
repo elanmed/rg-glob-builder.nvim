@@ -60,33 +60,37 @@ M.fzf_lua_adapter = function(opts)
   -- fzf-lua/lua/fzf-lua/providers/grep.lua
   opts.fzf_lua_opts = fzf_lua.core.set_fzf_field_index(opts.fzf_lua_opts)
 
-  local prev_cmd = ""
+  local base_rg_cmd = "rg --line-number --column --hidden --color=always --max-columns=4096 "
+  local initial_rg_cmd = base_rg_cmd .. "-- ''"
+  local prev_rg_cmd = initial_rg_cmd
 
   return fzf_lua.fzf_live(function(prompt_tbl)
     local prompt = prompt_tbl[1]
+    local search, flags_prompt = prompt:match "(.-)%s-%-%-(.*)"
+    if search == nil then
+      vim.notify("waiting for a trailing --", vim.log.levels.INFO)
+      return ""
+    end
+
     local glob_flags = rg_glob_builder.build(
       prompt,
       opts.rg_glob_builder_opts
     )
 
-    if glob_flags == nil and opts.rg_glob_builder_opts.nil_unless_trailing_space then
+    if flags_prompt:sub(-1) ~= " " and opts.rg_glob_builder_opts.nil_unless_trailing_space then
       -- `fzf_live` used to support nil, hence the `nil_unless_trailing_space` name
       -- these days `fzf_live` throws on nil, but keeping track of the previous command works well
-      vim.notify("waiting for a trailing space...", vim.log.levels.INFO)
-      return prev_cmd
+      if prev_rg_cmd == initial_rg_cmd then
+        vim.notify(prev_rg_cmd, vim.log.levels.INFO)
+      else
+        vim.notify("REPLAY: " .. prev_rg_cmd, vim.log.levels.INFO)
+      end
+      return prev_rg_cmd
     end
 
     -- based on the default grep rg_opts
-    local cmd_tbl = {
-      "rg",
-      "--line-number", "--column", -- necessary to scroll the preview to the correct line
-      "--hidden",
-      "--color=always",
-      "--max-columns=4096",
-      glob_flags,
-    }
-    local cmd = table.concat(cmd_tbl, " ")
-    prev_cmd = cmd
+    local cmd = base_rg_cmd .. glob_flags
+    prev_rg_cmd = cmd
     vim.notify(cmd, vim.log.levels.INFO)
 
     return cmd
