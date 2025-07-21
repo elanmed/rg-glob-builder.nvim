@@ -1,5 +1,3 @@
-local h = require "rg-glob-builder.helpers"
-
 local M = {}
 
 --- @class RecordFlagOpts
@@ -28,6 +26,8 @@ end
 --- @param opts ConstructRgFlagsOpts
 --- @return string | nil
 local function construct_rg_flags(opts)
+  local h = require "rg-glob-builder.helpers"
+
   local ext_tbl_processed = vim.tbl_map(function(ext)
     return "*." .. ext
   end, opts.ext_tbl)
@@ -67,6 +67,8 @@ end
 
 --- @param opts ParseFlagsOpts
 local function parse_flags(opts)
+  local h = require "rg-glob-builder.helpers"
+
   local state = nil
   local parsed = {
     include_file = {},
@@ -121,6 +123,8 @@ end
 --- @param opts RgGlobBuilderOpts
 M.build = function(prompt, opts)
   -- can assume opts is a table
+
+  local h = require "rg-glob-builder.helpers"
 
   prompt = h.default(prompt, "")
   -- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-custom-glob-parsing-for-git-grep

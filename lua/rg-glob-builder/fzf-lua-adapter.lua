@@ -13,8 +13,9 @@ M.fzf_lua_adapter = function(opts)
     error "rg_glob_builder.fzf_lua_adapter was called but fzf-lua is not installed!"
   end
   local rg_glob_builder = require "rg-glob-builder.builder"
+  local h = require "rg-glob-builder.helpers"
 
-  local custom_flags = require "rg-glob-builder.helpers".default(opts.rg_glob_builder_opts.custom_flags, {})
+  local custom_flags = h.default(opts.rg_glob_builder_opts.custom_flags, {})
   local header_tbl_line_one = {
     { custom_flags.extension or "-e", "*.[ext]", },
     { custom_flags.file or "-f", "file", },

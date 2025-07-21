@@ -1,7 +1,5 @@
 local M = {}
 
-local validate = require "rg-glob-builder.validator".validate
-
 --- @class ValidateOpts
 --- @field schema Schema
 --- @field value any
@@ -9,6 +7,7 @@ local validate = require "rg-glob-builder.validator".validate
 
 --- @param opts ValidateOpts
 M.validate = function(opts)
+  local validate = require "rg-glob-builder.validator".validate
   if not validate(opts.schema, opts.value) then
     vim.notify(
       "Malformed opts passed to: " .. opts.name .. "\n" ..
