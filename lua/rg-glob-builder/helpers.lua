@@ -30,4 +30,7 @@ M.default = function(val, default_val)
   return val
 end
 
+M.vimscript_true = 1
+M.vimscript_false = 0
+
 return M
