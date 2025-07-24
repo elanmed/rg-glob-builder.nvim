@@ -2,7 +2,6 @@ local M = {}
 
 --- @param path string
 M.read = function(path)
-  -- io.open won't throw
   local file = io.open(path, "r")
   if file == nil then
     local h = require "rg-glob-builder.helpers"
@@ -10,7 +9,6 @@ M.read = function(path)
     return cmd
   end
 
-  -- file:read won't throw
   local content = file:read "*a"
   file:close()
   return content
@@ -31,7 +29,6 @@ M.write = function(opts)
     return
   end
 
-  -- io.open won't throw
   local file = io.open(opts.path, "w")
   if file == nil then
     error(("ERROR! issue calling io.open with %s"):format(opts.path))
