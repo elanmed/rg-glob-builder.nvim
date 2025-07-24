@@ -5,8 +5,9 @@ M.read = function(path)
   -- io.open won't throw
   local file = io.open(path, "r")
   if file == nil then
-    -- TODO: store a default rg command
-    return "rg --line-number --column --hidden --color=always --max-columns=4096 -- ''"
+    local h = require "rg-glob-builder.helpers"
+    local cmd = table.concat({ h.base_rg_cmd, "-- ''", }, " ")
+    return cmd
   end
 
   -- file:read won't throw
@@ -26,14 +27,14 @@ M.write = function(opts)
   local path_dir = vim.fs.dirname(opts.path)
   local mkdir_res = vim.fn.mkdir(path_dir, "p")
   if mkdir_res == h.vimscript_false then
-    error "ERROR! issue with mkdir"
+    error(("ERROR! issue calling mkdir with %s"):format(opts.path))
     return
   end
 
   -- io.open won't throw
   local file = io.open(opts.path, "w")
   if file == nil then
-    error "ERROR! issue with io.open"
+    error(("ERROR! issue calling io.open with %s"):format(opts.path))
     return
   end
 

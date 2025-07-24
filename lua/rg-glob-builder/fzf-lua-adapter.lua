@@ -27,9 +27,12 @@ M.fzf_lua_adapter = function(opts)
     return
   end
 
+  local h = require "rg-glob-builder.helpers"
+  local cmd = table.concat({ h.base_rg_cmd, "-- ''", }, " ")
+
   local default_fzf_lua_opts = {
     multiprocess = true,
-    cmd = "rg --line-number --column --hidden --color=always --max-columns=4096 -- ''",
+    cmd = cmd,
     fn_transform_cmd = fn_transform_cmd_res,
   }
 
@@ -37,4 +40,5 @@ M.fzf_lua_adapter = function(opts)
     vim.tbl_deep_extend("force", default_fzf_lua_opts, opts.fzf_lua_opts)
   )
 end
+
 return M

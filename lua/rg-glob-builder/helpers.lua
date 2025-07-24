@@ -32,5 +32,6 @@ end
 
 M.vimscript_true = 1
 M.vimscript_false = 0
+M.base_rg_cmd = "rg --line-number --column --hidden --color=always --max-columns=4096"
 
 return M
