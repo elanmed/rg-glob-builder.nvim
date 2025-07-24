@@ -13,7 +13,8 @@ M.fzf_lua_adapter = function(opts)
     error "rg_glob_builder.fzf_lua_adapter was called but fzf-lua is not installed!"
   end
 
-  local prev_rg_cmd_file = vim.fs.joinpath(vim.fn.stdpath "data", "rg-glob-builder", "tmp.txt")
+  -- TODO: expose an option to customize this
+  local prev_rg_cmd_file = vim.fs.joinpath(vim.fn.stdpath "data", "rg-glob-builder", "prev_rg_cmd.txt")
   local fn_transform_cmd_str = string.format([[
     local query = ...
     local prev_rg_cmd_file = %q
