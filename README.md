@@ -1,8 +1,10 @@
-# rg-glob-builder.nvim
+# `rg-glob-builder.nvim`
 
 A Neovim plugin to generate intuitive glob patterns for searching with `rg`.
 
 ![demo](https://elanmed.dev/nvim-plugins/rg-glob-builder.png)
+
+> See the [fzf README](https://github.com/elanmed/rg-glob-builder.nvim/blob/master/README-FZF-LUA.md) and [telescope README](https://github.com/elanmed/rg-glob-builder.nvim/blob/master/README-TELESCOPE.md) for examples on how to integrate `rg-glob-builder` with the picker of your choice.
 
 ## Intro
 
@@ -14,7 +16,7 @@ Thankfully, all three of the most popular picker plugins support passing argumen
 - [Native support in `snacks`](https://github.com/folke/snacks.nvim/discussions/461#discussioncomment-11894765)
 - [Native support in `fzf-lua`](https://github.com/ibhagwan/fzf-lua/wiki#how-can-i-restrict-grep-search-to-certain-files)
 
-However, native `rg` arguments are clunky to type and difficult to order [correctly](https://github.com/ElanMedoff/rg-glob-builder.nvim#understanding-rg-glob-flags). So I built `rg-glob-builder.nvim`: a plugin to generate a reliable `rg` command with intuitive flag orderings using a handful of ergonomic custom flags.
+However, native `rg` arguments are clunky to type and difficult to order [correctly](https://github.com/elanmed/rg-glob-builder.nvim#understanding-rg-glob-flags). So I built `rg-glob-builder.nvim`: a plugin to generate a reliable `rg` command with intuitive flag orderings using a handful of ergonomic custom flags.
 
 #### Searching by extension
 ```lua
