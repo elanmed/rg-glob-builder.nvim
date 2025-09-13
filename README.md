@@ -16,8 +16,6 @@ Thankfully, all three of the most popular picker plugins support passing argumen
 
 However, native `rg` arguments are clunky to type and difficult to order [correctly](https://github.com/ElanMedoff/rg-glob-builder.nvim#understanding-rg-glob-flags). So I built `rg-glob-builder.nvim`: a plugin to generate a reliable `rg` command with intuitive flag orderings using a handful of ergonomic custom flags.
 
-> Note: the following examples use the `build` function, which is the most straightforward way to generate `rg` flags with `rg-glob-builder`. In practice, I'd recommend using the `fzf_lua_adapter` or `telescope_adapter`, depending on your picker plugin.
-
 #### Searching by extension
 ```lua
 require "rg-glob-builder".build "require -- -e rb !md"
@@ -110,14 +108,6 @@ require "rg-glob-builder".setup {
 --- @field ignore_case? string Defaults to "-nc"
 --- @field whole_word? string Defaults to "-w"
 --- @field partial_word? string Defaults to "-nw"
-
---- @class FzfLuaAdapterOpts
---- @field fzf_lua_opts table
---- @field rg_glob_builder_opts RgGlobBuilderOpts
-
---- @class TelescopeAdapterOpts
---- @field telescope_opts table
---- @field rg_glob_builder_opts RgGlobBuilderOpts
 ```
 
 ## Exports
@@ -128,30 +118,6 @@ require "rg-glob-builder".setup {
 require "rg-glob-builder".build("[prompt]", {
   -- ... RgGlobBuilderSetupOpts
 })
-```
-
-### `fzf_lua_adapter`
-```lua
--- FzfLuaAdapterOpts
-require "rg-glob-builder".fzf_lua_adapter {
-  -- Standard fzf-lua options https://github.com/ibhagwan/fzf-lua#customization
-  fzf_lua_opts = {}
-
-  -- RgGlobBuilderSetupOpts
-  rg_glob_builder_opts = {}
-}
-```
-
-### `telescope_adapter`
-```lua
--- TelescopeAdapterOpts
-require "rg-glob-builder".telescope_adapter {
-  -- Standard telescope options https://github.com/nvim-telescope/telescope.nvim#customization
-  telescope_opts = {}
-
-  -- RgGlobBuilderSetupOpts
-  rg_glob_builder_opts = {}
-}
 ```
 
 ## Understanding `rg` glob flags
@@ -252,6 +218,3 @@ In VSCode, using the global search interface for a similar query would look as f
 Interestingly, this VSCode search would return `a`, not `a,b`. In other words, VSCode matches the command `rg --files-with-matches -g 'a' -g 'b' -g !'a' -- ''` - the variant with the exclude at the _end_.
 
 I personally find this result most intuitive as well, which is why `rg-glob-builder` places all exclude flags at the end.
-
-## TODO
-- [ ] Adapter for snacks
