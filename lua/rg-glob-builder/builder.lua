@@ -1,5 +1,25 @@
 local M = {}
 
+--- @param input_str string
+local split = function(input_str)
+  local tbl = {}
+  for str in input_str:gmatch "([^%s]+)" do
+    table.insert(tbl, str)
+  end
+  return tbl
+end
+
+--- @generic T
+--- @param val T | nil
+--- @param default_val T
+--- @return T
+local default = function(val, default_val)
+  if val == nil then
+    return default_val
+  end
+  return val
+end
+
 --- @class RecordFlagOpts
 --- @field flag_val string
 --- @field include_tbl table
@@ -26,8 +46,6 @@ end
 --- @param opts ConstructRgFlagsOpts
 --- @return string | nil
 local function construct_rg_flags(opts)
-  local h = require "rg-glob-builder.helpers"
-
   local ext_tbl_processed = vim.tbl_map(function(ext)
     return "*." .. ext
   end, opts.ext_tbl)
@@ -42,7 +60,7 @@ local function construct_rg_flags(opts)
 
   if vim.tbl_count(file_ext_dir_tbl) > 0 then
     local negate_symbol = opts.negate and "!" or ""
-    local auto_quote = h.default(opts.auto_quote, true)
+    local auto_quote = default(opts.auto_quote, true)
     local quote_symbol = auto_quote and "'" or ""
     local flag = ""
 
@@ -67,8 +85,6 @@ end
 
 --- @param opts ParseFlagsOpts
 local function parse_flags(opts)
-  local h = require "rg-glob-builder.helpers"
-
   local state = nil
   local parsed = {
     include_file = {},
@@ -80,13 +96,13 @@ local function parse_flags(opts)
     case_flag = { "--ignore-case", },
     word_flag = { nil, },
   }
-  local directory_flag = h.default(opts.directory_flag, "-d")
-  local extension_flag = h.default(opts.extension_flag, "-e")
-  local file_flag = h.default(opts.file_flag, "-f")
-  local case_sensitive_flag = h.default(opts.case_sensitive_flag, "-c")
-  local ignore_case_flag = h.default(opts.ignore_case_flag, "-nc")
-  local whole_word_flag = h.default(opts.whole_word_flag, "-w")
-  local partial_word_flag = h.default(opts.partial_word_flag, "-nw")
+  local directory_flag = default(opts.directory_flag, "-d")
+  local extension_flag = default(opts.extension_flag, "-e")
+  local file_flag = default(opts.file_flag, "-f")
+  local case_sensitive_flag = default(opts.case_sensitive_flag, "-c")
+  local ignore_case_flag = default(opts.ignore_case_flag, "-nc")
+  local whole_word_flag = default(opts.whole_word_flag, "-w")
+  local partial_word_flag = default(opts.partial_word_flag, "-nw")
 
   for _, token in ipairs(opts.tokens) do
     if token == case_sensitive_flag then
@@ -124,19 +140,17 @@ end
 M.build = function(prompt, opts)
   -- can assume opts is a table
 
-  local h = require "rg-glob-builder.helpers"
-
-  prompt = h.default(prompt, "")
+  prompt = default(prompt, "")
   -- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-custom-glob-parsing-for-git-grep
   local search, flags_prompt = prompt:match "(.-)%s-%-%-(.*)"
   search = search or ""
-  if h.default(opts.auto_quote, true) then
+  if default(opts.auto_quote, true) then
     search = string.format("'%s'", search)
   end
   flags_prompt = flags_prompt or ""
 
-  local tokens = h.split(flags_prompt)
-  local custom_flags = h.default(opts.custom_flags, {})
+  local tokens = split(flags_prompt)
+  local custom_flags = default(opts.custom_flags, {})
   local flags = parse_flags {
     tokens = tokens,
     directory_flag = custom_flags.directory,

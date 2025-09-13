@@ -58,34 +58,4 @@ M.opts_schema = {
   exact = true,
 }
 
---- @class FzfLuaAdapterOpts
---- @field fzf_lua_opts table
---- @field rg_glob_builder_opts RgGlobBuilderOpts
-
---- @type Schema
-M.fzf_lua_adapter_opts_schema = {
-  type = "table",
-  optional = true,
-  entries = {
-    fzf_lua_opts = { type = "any", optional = true, },
-    rg_glob_builder_opts = M.opts_schema,
-  },
-  exact = true,
-}
-
---- @class TelescopeAdapterOpts
---- @field telescope_opts table
---- @field rg_glob_builder_opts RgGlobBuilderOpts
-
---- @type Schema
-M.telescope_adapter_opts_schema = {
-  type = "table",
-  optional = true,
-  entries = {
-    telescope_opts = { type = "any", },
-    rg_glob_builder_opts = M.opts_schema,
-  },
-  exact = true,
-}
-
 return M
