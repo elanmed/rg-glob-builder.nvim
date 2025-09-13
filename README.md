@@ -65,7 +65,7 @@ require "rg-glob-builder".build "require -- -d plugin* -f !*.test.*"
 
 ## Setup
 
-If an option is passed to `setup`, it will be inherited by `build`, `fzf_lua_adapter`, and `telescope_adapter`. If an option is passed to both `setup` and directly to `build`, `fzf_lua_adapter`, or `telescope_adapter`, the latter will take precedence.
+If an option is passed to `setup`, it will be inherited by `build`. If an option is passed to both `setup` and directly to `build`, the latter will take precedence.
 
 ```lua
 -- Default options, no need to pass these to `setup`
@@ -90,8 +90,7 @@ require "rg-glob-builder".setup {
     -- Searching by partial word is the default behavior in rg
     partial_word = "-nw",
   },
-  -- Quote the rg pattern and glob flags in single quotes. Defaults to true, except for in 
-  -- the `fzf_lua_adapter`
+  -- Quote the rg pattern and glob flags in single quotes. Defaults to true.
   auto_quote = true
 }
 ```
