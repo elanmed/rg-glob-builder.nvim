@@ -5,7 +5,8 @@ local setup_opts = {}
 --- @param opts RgGlobBuilderOpts
 M.setup = function(opts)
   local schemas = require "rg-glob-builder.schemas"
-  if not schemas.validate { schema = schemas.opts_schema, value = opts, name = "rg-glob-builder.setup", } then
+  local notify_assert = require "rg-glob-builder.validator".notify_assert
+  if not notify_assert { schema = schemas.opts_schema, value = opts, name = "[rg-glob-builder.nvim] setup.opts", } then
     return
   end
 
@@ -16,7 +17,8 @@ end
 --- @param opts RgGlobBuilderOpts
 M.build = function(prompt, opts)
   local schemas = require "rg-glob-builder.schemas"
-  if not schemas.validate { schema = schemas.opts_schema, value = opts, name = "rg-glob-builder.build", } then
+  local notify_assert = require "rg-glob-builder.validator".notify_assert
+  if not notify_assert { schema = schemas.opts_schema, value = opts, name = "[rg-glob-builder] build.opts", } then
     return
   end
 

@@ -1,26 +1,5 @@
 local M = {}
 
---- @class ValidateOpts
---- @field schema Schema
---- @field value any
---- @field name string
-
---- @param opts ValidateOpts
-M.validate = function(opts)
-  local validate = require "rg-glob-builder.validator".validate
-  if not validate(opts.schema, opts.value) then
-    vim.notify(
-      "Malformed opts passed to: " .. opts.name .. "\n" ..
-      "Expected to receive:\n" .. vim.inspect(opts.schema) .. "\n" ..
-      "Received:\n" .. vim.inspect(opts.value),
-      vim.log.levels.ERROR
-    )
-    return false
-  end
-
-  return true
-end
-
 --- @class RgGlobBuilderOpts
 --- @field auto_quote? boolean Quote the rg pattern and glob flags in single quotes. Defaults to true, except for in the `fzf_lua_adapter`.
 --- @field custom_flags? RgGlobBuilderOptsCustomFlags Custom flags
