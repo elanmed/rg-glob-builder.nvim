@@ -41,7 +41,6 @@ end
 --- @field file_tbl table
 --- @field ext_tbl table
 --- @field negate boolean
---- @field auto_quote? boolean
 
 --- @param opts ConstructRgFlagsOpts
 --- @return string | nil
@@ -60,12 +59,10 @@ local function construct_rg_flags(opts)
 
   if vim.tbl_count(file_ext_dir_tbl) > 0 then
     local negate_symbol = opts.negate and "!" or ""
-    local auto_quote = default(opts.auto_quote, true)
-    local quote_symbol = auto_quote and "'" or ""
     local flag = ""
 
     for _, glob in ipairs(file_ext_dir_tbl) do
-      flag = flag .. "-g " .. quote_symbol .. negate_symbol .. glob .. quote_symbol .. " "
+      flag = flag .. "-g " .. vim.fn.shellescape(negate_symbol .. glob) .. " "
     end
     return vim.trim(flag)
   end
@@ -144,9 +141,7 @@ M.build = function(prompt, opts)
   -- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-custom-glob-parsing-for-git-grep
   local search, flags_prompt = prompt:match "(.-)%s-%-%-(.*)"
   search = search or ""
-  if default(opts.auto_quote, true) then
-    search = string.format("'%s'", search)
-  end
+  search = vim.fn.shellescape(search)
   flags_prompt = flags_prompt or ""
 
   local tokens = split(flags_prompt)
@@ -167,7 +162,6 @@ M.build = function(prompt, opts)
     dir_tbl = flags.include_dir,
     file_tbl = flags.include_file,
     ext_tbl = flags.include_ext,
-    auto_quote = opts.auto_quote,
   }
 
   local negate_flag = construct_rg_flags {
@@ -175,7 +169,6 @@ M.build = function(prompt, opts)
     dir_tbl = flags.negate_dir,
     file_tbl = flags.negate_file,
     ext_tbl = flags.negate_ext,
-    auto_quote = opts.auto_quote,
   }
 
   local cmd = vim.iter {

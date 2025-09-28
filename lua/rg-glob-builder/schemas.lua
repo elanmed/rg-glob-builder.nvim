@@ -1,7 +1,6 @@
 local M = {}
 
 --- @class RgGlobBuilderOpts
---- @field auto_quote? boolean Quote the rg pattern and glob flags in single quotes. Defaults to true, except for in the `fzf_lua_adapter`.
 --- @field custom_flags? RgGlobBuilderOptsCustomFlags Custom flags
 
 --- @class RgGlobBuilderOptsCustomFlags
@@ -18,7 +17,6 @@ M.opts_schema = {
   type = "table",
   optional = true,
   entries = {
-    auto_quote = { type = "boolean", optional = true, },
     custom_flags = {
       type = "table",
       optional = true,

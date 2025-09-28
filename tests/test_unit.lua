@@ -66,13 +66,6 @@ T["build"]["setup opts"]["directory"] = function()
     [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
   )
 end
-T["build"]["setup opts"]["auto quote"] = function()
-  child.lua [[ M.setup { auto_quote = false, } ]]
-  expect.equality(
-    child.lua [[ return M.build "require -- -e lua !rb"]],
-    [[--ignore-case -g *.lua -g !*.rb -- require]]
-  )
-end
 
 T["build"]["local opts"] = MiniTest.new_set()
 T["build"]["local opts"]["case"] = function()
@@ -121,12 +114,6 @@ T["build"]["local opts"]["directory"] = function()
   expect.equality(
     child.lua [[ return M.build("require -- --dir plugins !feature_*", { custom_flags = { directory = "--dir", }, })]],
     [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
-  )
-end
-T["build"]["local opts"]["auto quote"] = function()
-  expect.equality(
-    child.lua [[ return M.build("require -- -e lua !rb", { auto_quote = false })]],
-    [[--ignore-case -g *.lua -g !*.rb -- require]]
   )
 end
 
@@ -181,13 +168,6 @@ T["build"]["local opts overriding setup opts"]["directory"] = function()
   expect.equality(
     child.lua [[ return M.build("require -- --dir plugins !feature_*", { custom_flags = { directory = "--dir", }, })]],
     [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
-  )
-end
-T["build"]["local opts overriding setup opts"]["auto quote"] = function()
-  child.lua [[ M.setup { auto_quote = true, } ]]
-  expect.equality(
-    child.lua [[ return M.build("require -- -e lua !rb", { auto_quote = false })]],
-    [[--ignore-case -g *.lua -g !*.rb -- require]]
   )
 end
 

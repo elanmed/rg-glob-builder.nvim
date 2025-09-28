@@ -48,10 +48,7 @@ local telescope_adapter = function(rg_glob_builder_opts, telescope_opts)
 
     local glob_flags = rg_glob_builder.build(
       prompt,
-      vim.tbl_deep_extend(
-        "force",
-        rg_glob_builder_opts,
-        { auto_quote = false, }
+      rg_glob_builder_opts,
       )
     )
 

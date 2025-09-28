@@ -90,8 +90,6 @@ require "rg-glob-builder".setup {
     -- Searching by partial word is the default behavior in rg
     partial_word = "-nw",
   },
-  -- Quote the rg pattern and glob flags in single quotes. Defaults to true.
-  auto_quote = true
 }
 ```
 
@@ -99,7 +97,6 @@ require "rg-glob-builder".setup {
 ```lua
 --- @class RgGlobBuilderOpts
 --- @field custom_flags? RgGlobBuilderOptsCustomFlags
---- @field auto_quote? boolean Defualts to `true`
 
 --- @class RgGlobBuilderOptsCustomFlags
 --- @field extension? string Defaults to "-e"
