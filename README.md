@@ -4,7 +4,7 @@ A Neovim plugin to generate intuitive glob patterns for searching with `rg`.
 
 ![demo](https://elanmed.dev/nvim-plugins/rg-glob-builder.png)
 
-> See the [fzf README](https://github.com/elanmed/rg-glob-builder.nvim/blob/master/README-FZF-LUA.md) and [telescope README](https://github.com/elanmed/rg-glob-builder.nvim/blob/master/README-TELESCOPE.md) for examples on how to integrate `rg-glob-builder` with the picker of your choice.
+> See the README files for [fzf](https://github.com/elanmed/rg-glob-builder.nvim/blob/master/README-FZF-LUA.md) and [telescope](https://github.com/elanmed/rg-glob-builder.nvim/blob/master/README-TELESCOPE.md) for examples on how to integrate `rg-glob-builder` with the picker of your choice.
 
 ## Intro
 
@@ -16,7 +16,7 @@ Thankfully, all three of the most popular picker plugins support passing argumen
 - [Native support in `snacks`](https://github.com/folke/snacks.nvim/discussions/461#discussioncomment-11894765)
 - [Native support in `fzf-lua`](https://github.com/ibhagwan/fzf-lua/wiki#how-can-i-restrict-grep-search-to-certain-files)
 
-However, native `rg` arguments are clunky to type and difficult to order [correctly](https://github.com/elanmed/rg-glob-builder.nvim#understanding-rg-glob-flags). So I built `rg-glob-builder.nvim`: a plugin to generate a reliable `rg` command with intuitive flag orderings using a handful of ergonomic custom flags.
+However, native `rg` arguments are clunky to type and difficult to order [correctly](https://github.com/elanmed/rg-glob-builder.nvim#ordering-rg-glob-flags). So I built `rg-glob-builder.nvim`: a plugin to generate a reliable `rg` command with intuitive flag orderings using a handful of ergonomic custom flags.
 
 #### Searching by extension
 ```lua
@@ -63,11 +63,24 @@ require "rg-glob-builder".build "require -- -d plugin* -f !*.test.*"
 -- returns: "--ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'"
 ```
 
-## Example configuration
+## Exports
 
 ```lua
--- Default options, no need to pass these to `setup`
-require "rg-glob-builder".build("require", {
+--- @class RgGlobBuilderOpts
+--- @field custom_flags? RgGlobBuilderOptsCustomFlags
+
+--- @class RgGlobBuilderOptsCustomFlags
+--- @field extension? string Defaults to "-e"
+--- @field file? string Defaults to "-f"
+--- @field directory? string Defaults to "-d"
+--- @field case_sensitive? string Defaults to "-c"
+--- @field ignore_case? string Defaults to "-nc"
+--- @field whole_word? string Defaults to "-w"
+--- @field partial_word? string Defaults to "-nw"
+
+require "rg-glob-builder".build("query", {
+  -- Default options, no need to pass these to `build`
+  -- RgGlobBuilderOptsCustomFlags
   custom_flags = {
     -- The flag to include or negate a directory to the glob pattern. Directories are 
     -- updated internally to "**/[directory]/**"
@@ -91,32 +104,7 @@ require "rg-glob-builder".build("require", {
 })
 ```
 
-## Types 
-```lua
---- @class RgGlobBuilderOpts
---- @field custom_flags? RgGlobBuilderOptsCustomFlags
-
---- @class RgGlobBuilderOptsCustomFlags
---- @field extension? string Defaults to "-e"
---- @field file? string Defaults to "-f"
---- @field directory? string Defaults to "-d"
---- @field case_sensitive? string Defaults to "-c"
---- @field ignore_case? string Defaults to "-nc"
---- @field whole_word? string Defaults to "-w"
---- @field partial_word? string Defaults to "-nw"
-```
-
-## Exports
-
-### `build`
-```lua
--- RgGlobBuilderBuildOpts
-require "rg-glob-builder".build("[prompt]", {
-  -- ... RgGlobBuilderSetupOpts
-})
-```
-
-## Understanding `rg` glob flags
+## Ordering `rg` glob flags
 
 Say we have the following directory:
 
