@@ -63,13 +63,11 @@ require "rg-glob-builder".build "require -- -d plugin* -f !*.test.*"
 -- returns: "--ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'"
 ```
 
-## Setup
-
-If an option is passed to `setup`, it will be inherited by `build`. If an option is passed to both `setup` and directly to `build`, the latter will take precedence.
+## Example configuration
 
 ```lua
 -- Default options, no need to pass these to `setup`
-require "rg-glob-builder".setup {
+require "rg-glob-builder".build("require", {
   custom_flags = {
     -- The flag to include or negate a directory to the glob pattern. Directories are 
     -- updated internally to "**/[directory]/**"
@@ -90,7 +88,7 @@ require "rg-glob-builder".setup {
     -- Searching by partial word is the default behavior in rg
     partial_word = "-nw",
   },
-}
+})
 ```
 
 ## Types 

@@ -10,77 +10,20 @@ local T = MiniTest.new_set {
     post_once = child.stop,
   },
 }
+
 T["build"] = MiniTest.new_set()
-
-T["build"]["setup opts"] = MiniTest.new_set()
-T["build"]["setup opts"]["case"] = function()
-  child.lua [[ M.setup { custom_flags = { case_sensitive = "--case", ignore_case = "--no-case", }, } ]]
-
-  expect.equality(
-    child.lua [[ return M.build "require -- --case" ]],
-    [[--case-sensitive -- 'require']]
-  )
-  expect.equality(
-    child.lua [[ return M.build "require -- --no-case" ]],
-    [[--ignore-case -- 'require']]
-  )
-  expect.equality(
-    child.lua [[ return M.build "require -- --case --no-case" ]],
-    [[--ignore-case -- 'require']]
-  )
-end
-T["build"]["setup opts"]["whole word"] = function()
-  child.lua [[ M.setup { custom_flags = { whole_word = "--whole-word", partial_word = "--partial-word", }, } ]]
-
-  expect.equality(
-    child.lua [[ return M.build "require -- --whole-word" ]],
-    [[--ignore-case --word-regexp -- 'require']]
-  )
-  expect.no_equality(
-    child.lua [[ return M.build "require -- --partial-word" ]],
-    [[--ignore-case --word-regexp -- 'require']]
-  )
-  expect.equality(
-    child.lua [[ return M.build "require -- --whole-word --partial-word" ]],
-    [[--ignore-case -- 'require']]
-  )
-end
-T["build"]["setup opts"]["extension"] = function()
-  child.lua [[ M.setup { custom_flags = { extension = "--ext", }, } ]]
-  expect.equality(
-    child.lua [[ return M.build "require -- --ext md !lua"]],
-    [[--ignore-case -g '*.md' -g '!*.lua' -- 'require']]
-  )
-end
-T["build"]["setup opts"]["file"] = function()
-  child.lua [[ M.setup { custom_flags = { file = "--file", }, } ]]
-  expect.equality(
-    child.lua [[ return M.build "require -- --file README.md !init.lua"]],
-    [[--ignore-case -g 'README.md' -g '!init.lua' -- 'require']]
-  )
-end
-T["build"]["setup opts"]["directory"] = function()
-  child.lua [[ M.setup { custom_flags = { directory = "--dir", }, } ]]
-  expect.equality(
-    child.lua [[ return M.build "require -- --dir plugins !feature_*"]],
-    [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
-  )
-end
-
 T["build"]["local opts"] = MiniTest.new_set()
 T["build"]["local opts"]["case"] = function()
-  child.lua [[ M.setup { custom_flags = { case_sensitive = "--case", ignore_case = "--no-case", }, } ]]
-
   expect.equality(
-    child.lua [[ return M.build "require -- --case" ]],
+    child.lua [[ return M.build("require -- --case", { custom_flags = { case_sensitive = "--case", ignore_case = "--no-case", }, }) ]],
     [[--case-sensitive -- 'require']]
   )
   expect.equality(
-    child.lua [[ return M.build "require -- --no-case" ]],
+    child.lua [[ return M.build("require -- --no-case", { custom_flags = { case_sensitive = "--case", ignore_case = "--no-case", }, }) ]],
     [[--ignore-case -- 'require']]
   )
   expect.equality(
-    child.lua [[ return M.build "require -- --case --no-case" ]],
+    child.lua [[ return M.build("require -- --case --no-case", { custom_flags = { case_sensitive = "--case", ignore_case = "--no-case", }, }) ]],
     [[--ignore-case -- 'require']]
   )
 end
@@ -111,60 +54,6 @@ T["build"]["local opts"]["file"] = function()
   )
 end
 T["build"]["local opts"]["directory"] = function()
-  expect.equality(
-    child.lua [[ return M.build("require -- --dir plugins !feature_*", { custom_flags = { directory = "--dir", }, })]],
-    [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
-  )
-end
-
-T["build"]["local opts overriding setup opts"] = MiniTest.new_set()
-T["build"]["local opts overriding setup opts"]["case"] = function()
-  child.lua [[ M.setup { custom_flags = { case_sensitive = "--case", ignore_case = "--no-case", }, } ]]
-
-  expect.equality(
-    child.lua [[ return M.build("require -- --c", { custom_flags = { case_sensitive = "--c", ignore_case = "--noc", }, }) ]],
-    [[--case-sensitive -- 'require']]
-  )
-  expect.equality(
-    child.lua [[ return M.build("require -- --noc", { custom_flags = { case_sensitive = "--case", ignore_case = "--no-case", }, }) ]],
-    [[--ignore-case -- 'require']]
-  )
-  expect.equality(
-    child.lua [[ return M.build("require -- --c --noc", { custom_flags = { case_sensitive = "--case", ignore_case = "--no-case", }, }) ]],
-    [[--ignore-case -- 'require']]
-  )
-end
-T["build"]["local opts overriding setup opts"]["whole word"] = function()
-  child.lua [[ M.setup { custom_flags = { whole_word = "--whold-word", partial_word = "--partial-word", }, } ]]
-  expect.equality(
-    child.lua [[ return M.build("require -- --w", { custom_flags = { whole_word = "--w", }, }) ]],
-    [[--ignore-case --word-regexp -- 'require']]
-  )
-  expect.no_equality(
-    child.lua [[ return M.build("require -- --p", { custom_flags = { partial_word = "--p", },  }) ]],
-    [[--ignore-case --word-regexp -- 'require']]
-  )
-  expect.equality(
-    child.lua [[ return M.build("require -- --w --p", { custom_flags = { whole_word = "--w", partial_word = "--p", }, }) ]],
-    [[--ignore-case -- 'require']]
-  )
-end
-T["build"]["local opts overriding setup opts"]["extension"] = function()
-  child.lua [[ M.setup { custom_flags = { extension = "--e" }, } ]]
-  expect.equality(
-    child.lua [[ return M.build("require -- --ext md !lua", { custom_flags = { extension = "--ext", }, })]],
-    [[--ignore-case -g '*.md' -g '!*.lua' -- 'require']]
-  )
-end
-T["build"]["local opts overriding setup opts"]["file"] = function()
-  child.lua [[ M.setup { custom_flags = { file = "--f" }, } ]]
-  expect.equality(
-    child.lua [[ return M.build("require -- --file README.md !init.lua", { custom_flags = { file = "--file", }, })]],
-    [[--ignore-case -g 'README.md' -g '!init.lua' -- 'require']]
-  )
-end
-T["build"]["local opts overriding setup opts"]["directory"] = function()
-  child.lua [[ M.setup { custom_flags = { directory = "--d" }, } ]]
   expect.equality(
     child.lua [[ return M.build("require -- --dir plugins !feature_*", { custom_flags = { directory = "--dir", }, })]],
     [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
