@@ -8,7 +8,7 @@ A Neovim plugin to generate intuitive glob patterns for searching with `rg`.
 
 ## Intro
 
-When searching globally with a picker plugin, it can often be helpful to refine your search as you see the results. 
+When searching globally with a picker plugin, it can often be helpful to refine your search as you see the results.
 
 Thankfully, all three of the most popular picker plugins support passing arguments to `rg` in a live-search:
 
@@ -19,6 +19,7 @@ Thankfully, all three of the most popular picker plugins support passing argumen
 However, native `rg` arguments are clunky to type and difficult to order [correctly](https://github.com/elanmed/rg-glob-builder.nvim#ordering-rg-glob-flags). So I built `rg-glob-builder.nvim`: a plugin to generate a reliable `rg` command with intuitive flag orderings using a handful of ergonomic custom flags.
 
 #### Searching by extension
+
 ```lua
 require "rg-glob-builder".build "require -- -e rb !md"
 -- returns: "--ignore-case -g '*.rb' -g !'*.md' -- 'require'"
@@ -26,12 +27,14 @@ require "rg-glob-builder".build "require -- -e rb !md"
 ```
 
 #### Searching by file
+
 ```lua
 require "rg-glob-builder".build "require -- -f init.lua"
 -- returns: "--ignore-case -g 'init.lua' -- 'require'"
 ```
 
 #### Searching in a directory
+
 ```lua
 require "rg-glob-builder".build "require -- -d plugins"
 -- returns: "--ignore-case -g '**/plugins/**' -- 'require'"
@@ -39,18 +42,21 @@ require "rg-glob-builder".build "require -- -d plugins"
 ```
 
 #### Multiple of the same flag is supported
+
 ```lua
 require "rg-glob-builder".build "require -- -e rb -f init.lua -e lua"
 -- returns: "--ignore-case -g 'init.lua' -g '*.rb' -g '*.lua' -- 'require'"
 ```
 
 #### Case-sensitive and whole-word searching
+
 ```lua
 require "rg-glob-builder".build "require -- -c -w"
 -- returns: "--case-sensitive --word-rexegp -- 'require'"
 ```
 
 with later flags overriding earlier ones:
+
 ```lua
 require "rg-glob-builder".build "require -- -c -w -nc -nw"
 -- returns: "--ignore-case -- 'require'"
@@ -58,9 +64,17 @@ require "rg-glob-builder".build "require -- -c -w -nc -nw"
 ```
 
 #### Globs are passed along
+
 ```lua
 require "rg-glob-builder".build "require -- -d plugin* -f !*.test.*"
 -- returns: "--ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'"
+```
+
+#### Passing raw input
+
+```lua
+require "rg-glob-builder".build "require -- -r -g plugin*"
+-- returns: "--ignore-case -g 'plugin*' -- 'require'"
 ```
 
 ## Exports
@@ -82,13 +96,13 @@ require "rg-glob-builder".build("query", {
   -- Default options, no need to pass these to `build`
   -- RgGlobBuilderOptsCustomFlags
   custom_flags = {
-    -- The flag to include or negate a directory to the glob pattern. Directories are 
+    -- The flag to include or negate a directory to the glob pattern. Directories are
     -- updated internally to "**/[directory]/**"
     directory = "-d",
-    -- The flag to include or negate an extension to the glob pattern. Extensions are 
+    -- The flag to include or negate an extension to the glob pattern. Extensions are
     -- prefixed internally with "*."
     extension = "-e",
-    -- The flag to include or negate a file to the glob pattern. Files are passed without 
+    -- The flag to include or negate a file to the glob pattern. Files are passed without
     -- modification to the glob
     file = "-f",
     -- The flag to search case sensitively, adds the `--case-sensitive` flag
@@ -97,9 +111,11 @@ require "rg-glob-builder".build("query", {
     ignore_case = "-nc",
     -- The flag to search case by whole word, adds the `--word-regexp` flag
     whole_word = "-w",
-    -- The flag to search case by partial word, removes the `--word-regexp` flag 
+    -- The flag to search case by partial word, removes the `--word-regexp` flag
     -- Searching by partial word is the default behavior in rg
     partial_word = "-nw",
+    -- The flag to begin passing raw input that is only minimally processed (i.e. escaped)
+    raw_input = "-r",
   },
 })
 ```

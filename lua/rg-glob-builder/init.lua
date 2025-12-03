@@ -11,6 +11,7 @@ local M = {}
 --- @field ignore_case? string The flag to search case insensitively, adds the `--case-ignore` flag. Defaults to "-nc"
 --- @field whole_word? string The flag to search case by whole word, adds the `--word-regexp` flag. Defaults to "-w"
 --- @field partial_word? string The flag to search case by partial word, removes the `--word-regexp` flag (searching by partial word is the default behavior in rg). Defaults to "-w"
+--- @field raw_input? string The flag to begin passing input to rg. Defaults to "-r"
 
 --- @type Schema
 local opts_schema = {

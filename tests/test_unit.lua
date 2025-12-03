@@ -12,8 +12,8 @@ local T = MiniTest.new_set {
 }
 
 T["build"] = MiniTest.new_set()
-T["build"]["local opts"] = MiniTest.new_set()
-T["build"]["local opts"]["case"] = function()
+T["build"]["custom opts"] = MiniTest.new_set()
+T["build"]["custom opts"]["case"] = function()
   expect.equality(
     child.lua [[ return M.build("require -- --case", { custom_flags = { case_sensitive = "--case", ignore_case = "--no-case", }, }) ]],
     [[--case-sensitive -- 'require']]
@@ -27,7 +27,7 @@ T["build"]["local opts"]["case"] = function()
     [[--ignore-case -- 'require']]
   )
 end
-T["build"]["local opts"]["whole word"] = function()
+T["build"]["custom opts"]["whole word"] = function()
   expect.equality(
     child.lua [[ return M.build("require -- --whole-word", { custom_flags = { whole_word = "--whole-word", partial_word = "--partial-word", }, }) ]],
     [[--ignore-case --word-regexp -- 'require']]
@@ -41,19 +41,19 @@ T["build"]["local opts"]["whole word"] = function()
     [[--ignore-case -- 'require']]
   )
 end
-T["build"]["local opts"]["extension"] = function()
+T["build"]["custom opts"]["extension"] = function()
   expect.equality(
     child.lua [[ return M.build("require -- --ext md !lua", { custom_flags = { extension = "--ext", }, })]],
     [[--ignore-case -g '*.md' -g '!*.lua' -- 'require']]
   )
 end
-T["build"]["local opts"]["file"] = function()
+T["build"]["custom opts"]["file"] = function()
   expect.equality(
     child.lua [[ return M.build("require -- --file README.md !init.lua", { custom_flags = { file = "--file", }, })]],
     [[--ignore-case -g 'README.md' -g '!init.lua' -- 'require']]
   )
 end
-T["build"]["local opts"]["directory"] = function()
+T["build"]["custom opts"]["directory"] = function()
   expect.equality(
     child.lua [[ return M.build("require -- --dir plugins !feature_*", { custom_flags = { directory = "--dir", }, })]],
     [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
@@ -221,6 +221,32 @@ T["build"]["default opts"]["directory"]["should include and exclude dirs"] = fun
   )
 end
 
+T["build"]["default opts"]["raw input"] = MiniTest.new_set()
+T["build"]["default opts"]["raw input"]["as the only flag"] = function()
+  expect.equality(
+    child.lua [[ return M.build "require -- -r -g !feature_*"]],
+    [[--ignore-case '-g' '!feature_*' -- 'require']]
+  )
+end
+T["build"]["default opts"]["raw input"]["as the first flag of many"] = function()
+  expect.equality(
+    child.lua [[ return M.build "require -- -r -g !feature_* -e lua"]],
+    [[--ignore-case '-g' '!feature_*' -g '*.lua' -- 'require']]
+  )
+end
+T["build"]["default opts"]["raw input"]["as the middle flag of many"] = function()
+  expect.equality(
+    child.lua [[ return M.build "require -- -e lua -r -g !feature_* -d plugins"]],
+    [[--ignore-case '-g' '!feature_*' -g '*.lua' -g '**/plugins/**' -- 'require']]
+  )
+end
+T["build"]["default opts"]["raw input"]["as the last flag of many"] = function()
+  expect.equality(
+    child.lua [[ return M.build "require -- -e lua -d plugins -r -g !feature_*"]],
+    [[--ignore-case '-g' '!feature_*' -g '*.lua' -g '**/plugins/**' -- 'require']]
+  )
+end
+
 T["pending prompts"] = function()
   expect.equality(
     child.lua [[ return M.build(nil)]],
@@ -246,7 +272,7 @@ end
 T["kitchen sink"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -e rb md !lua -d plugins !feature_* -f !*.test.* *_spec.rb"]],
-    [[--ignore-case -g '*_spec.rb' -g '*.rb' -g '*.md' -g '**/plugins/**' -g '!*.test.*' -g '!*.lua' -g '!**/feature_*/**' -- 'require']]
+    [[--ignore-case -g '*.rb' -g '*.md' -g '**/plugins/**' -g '*_spec.rb' -g '!*.lua' -g '!**/feature_*/**' -g '!*.test.*' -- 'require']]
   )
 end
 

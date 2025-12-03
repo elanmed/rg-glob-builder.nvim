@@ -11,54 +11,35 @@ local default = function(val, default_val)
   return val
 end
 
---- @class RecordFlagOpts
---- @field flag_val string
---- @field include_tbl table
---- @field exclude_tbl table
-
---- @param opts RecordFlagOpts
-local function record_flag(opts)
-  if opts.flag_val:sub(1, 1) == "!" then
-    if #opts.flag_val > 1 then
-      table.insert(opts.exclude_tbl, opts.flag_val:sub(2))
-    end
-  else
-    table.insert(opts.include_tbl, opts.flag_val)
-  end
-end
-
---- @class ConstructRgFlagsOpts
+--- @class FormatRgFlagsOpts
 --- @field dir_tbl table
 --- @field file_tbl table
 --- @field ext_tbl table
 --- @field negate boolean
 
---- @param opts ConstructRgFlagsOpts
---- @return string | nil
-local function construct_rg_flags(opts)
+--- @param opts FormatRgFlagsOpts
+--- @return table
+local function format_rg_flags(opts)
+  local exclude_symbol = opts.negate and "!" or ""
+
   local ext_tbl_processed = vim.tbl_map(function(ext)
-    return "*." .. ext
+    local formatted = ("%s*.%s"):format(exclude_symbol, ext)
+    return "-g " .. vim.fn.shellescape(formatted)
   end, opts.ext_tbl)
 
   local dir_tbl_processed = vim.tbl_map(function(dir)
-    return string.format("**/%s/**", dir)
+    local formatted = ("%s**/%s/**"):format(exclude_symbol, dir)
+    return "-g " .. vim.fn.shellescape(formatted)
   end, opts.dir_tbl)
 
-  local file_ext_dir_tbl = vim.iter { opts.file_tbl, ext_tbl_processed, dir_tbl_processed, }
-      :flatten()
-      :totable()
+  local file_tbl_processed = vim.tbl_map(function(file)
+    local formatted = ("%s%s"):format(exclude_symbol, file)
+    return "-g " .. vim.fn.shellescape(formatted)
+  end, opts.file_tbl)
 
-  if vim.tbl_count(file_ext_dir_tbl) > 0 then
-    local exclude_symbol = opts.negate and "!" or ""
-    local flag = ""
-
-    for _, glob in ipairs(file_ext_dir_tbl) do
-      flag = flag .. "-g " .. vim.fn.shellescape(exclude_symbol .. glob) .. " "
-    end
-    return vim.trim(flag)
-  end
-
-  return nil
+  return vim.iter {
+    ext_tbl_processed, dir_tbl_processed, file_tbl_processed,
+  }:flatten():totable()
 end
 
 --- @class ParseFlagsOpts
@@ -70,6 +51,7 @@ end
 --- @field ignore_case_flag? string
 --- @field whole_word_flag? string
 --- @field partial_word_flag? string
+--- @field raw_input_flag? string
 
 --- @param opts ParseFlagsOpts
 local function parse_flags(opts)
@@ -81,6 +63,7 @@ local function parse_flags(opts)
     exclude_dir = {},
     include_ext = {},
     exclude_ext = {},
+    raw_input = {},
     case_flag = { "--ignore-case", },
     word_flag = { nil, },
   }
@@ -91,6 +74,7 @@ local function parse_flags(opts)
   local ignore_case_flag = default(opts.ignore_case_flag, "-nc")
   local whole_word_flag = default(opts.whole_word_flag, "-w")
   local partial_word_flag = default(opts.partial_word_flag, "-nw")
+  local raw_input_flag = default(opts.raw_input_flag, "-r")
 
   for _, token in ipairs(opts.tokens) do
     if token == case_sensitive_flag then
@@ -111,13 +95,19 @@ local function parse_flags(opts)
       state = "dir"
     elseif token == extension_flag then
       state = "ext"
+    elseif token == raw_input_flag then
+      state = "raw"
     elseif state then
-      if token:sub(1, 1) == "!" then
-        if #token > 1 then
-          table.insert(parsed["exclude_" .. state], token:sub(2))
-        end
+      if state == "raw" then
+        table.insert(parsed.raw_input, token)
       else
-        table.insert(parsed["include_" .. state], token)
+        if token:sub(1, 1) == "!" then
+          if #token > 1 then
+            table.insert(parsed["exclude_" .. state], token:sub(2))
+          end
+        else
+          table.insert(parsed["include_" .. state], token)
+        end
       end
     end
   end
@@ -137,7 +127,7 @@ M.build = function(prompt, opts)
   search = vim.fn.shellescape(search)
   flags_prompt = flags_prompt or ""
 
-  local tokens = vim.split(flags_prompt, "%s")
+  local tokens = vim.split(flags_prompt, "%s+", { trimempty = true, })
   local custom_flags = default(opts.custom_flags, {})
   local flags = parse_flags {
     tokens = tokens,
@@ -148,27 +138,33 @@ M.build = function(prompt, opts)
     ignore_case_flag = custom_flags.ignore_case,
     partial_word_flag = custom_flags.partial_word,
     whole_word_flag = custom_flags.whole_word,
+    raw_input_flag = custom_flags.raw_input,
   }
 
-  local include_flag = construct_rg_flags {
+  local include_flags_formatted = format_rg_flags {
     negate = false,
     dir_tbl = flags.include_dir,
     file_tbl = flags.include_file,
     ext_tbl = flags.include_ext,
   }
 
-  local exclude_flag = construct_rg_flags {
+  local exclude_flags_formatted = format_rg_flags {
     negate = true,
     dir_tbl = flags.exclude_dir,
     file_tbl = flags.exclude_file,
     ext_tbl = flags.exclude_ext,
   }
 
+  local raw_input_formatted = vim.tbl_map(function(raw_input)
+    return vim.fn.shellescape(raw_input)
+  end, flags.raw_input)
+
   local cmd = vim.iter {
     flags.case_flag,
     flags.word_flag,
-    include_flag,
-    exclude_flag,
+    raw_input_formatted,
+    include_flags_formatted,
+    exclude_flags_formatted,
     "--",
     search,
   }:flatten():totable()

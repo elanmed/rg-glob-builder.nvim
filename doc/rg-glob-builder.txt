@@ -10,6 +10,7 @@ Searching in a directory .......... |rg-glob-builder-searching-in-a-directory|
 Multiple of the same flag is supported  |rg-glob-builder-multiple-of-the-same-flag-is-supported|
 Case-sensitive and whole-word searching  |rg-glob-builder-case-sensitive-and-whole-word-searching|
 Globs are passed along .............. |rg-glob-builder-globs-are-passed-along|
+Passing raw input ........................ |rg-glob-builder-passing-raw-input|
 Exports ............................................ |rg-glob-builder-exports|
 Ordering `rg` glob flags .......... |rg-glob-builder-ordering-`rg`-glob-flags|
 
@@ -109,6 +110,14 @@ GLOBS ARE PASSED ALONG                *rg-glob-builder-globs-are-passed-along*
     -- returns: "--ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'"
 <
 
+                                                                              
+PASSING RAW INPUT                          *rg-glob-builder-passing-raw-input*
+
+>lua
+    require "rg-glob-builder".build "require -- -r -g plugin*"
+    -- returns: "--ignore-case -g 'plugin*' -- 'require'"
+<
+
 ------------------------------------------------------------------------------
 EXPORTS                                              *rg-glob-builder-exports*
 
@@ -130,13 +139,13 @@ EXPORTS                                              *rg-glob-builder-exports*
       -- Default options, no need to pass these to `build`
       -- RgGlobBuilderOptsCustomFlags
       custom_flags = {
-        -- The flag to include or negate a directory to the glob pattern. Directories are 
+        -- The flag to include or negate a directory to the glob pattern. Directories are
         -- updated internally to "**/[directory]/**"
         directory = "-d",
-        -- The flag to include or negate an extension to the glob pattern. Extensions are 
+        -- The flag to include or negate an extension to the glob pattern. Extensions are
         -- prefixed internally with "*."
         extension = "-e",
-        -- The flag to include or negate a file to the glob pattern. Files are passed without 
+        -- The flag to include or negate a file to the glob pattern. Files are passed without
         -- modification to the glob
         file = "-f",
         -- The flag to search case sensitively, adds the `--case-sensitive` flag
@@ -145,9 +154,11 @@ EXPORTS                                              *rg-glob-builder-exports*
         ignore_case = "-nc",
         -- The flag to search case by whole word, adds the `--word-regexp` flag
         whole_word = "-w",
-        -- The flag to search case by partial word, removes the `--word-regexp` flag 
+        -- The flag to search case by partial word, removes the `--word-regexp` flag
         -- Searching by partial word is the default behavior in rg
         partial_word = "-nw",
+        -- The flag to begin passing raw input that is only minimally processed (i.e. escaped)
+        raw_input = "-r",
       },
     })
 <
