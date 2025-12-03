@@ -1,14 +1,5 @@
 local M = {}
 
---- @param input_str string
-local split = function(input_str)
-  local tbl = {}
-  for str in input_str:gmatch "([^%s]+)" do
-    table.insert(tbl, str)
-  end
-  return tbl
-end
-
 --- @generic T
 --- @param val T | nil
 --- @param default_val T
@@ -146,7 +137,7 @@ M.build = function(prompt, opts)
   search = vim.fn.shellescape(search)
   flags_prompt = flags_prompt or ""
 
-  local tokens = split(flags_prompt)
+  local tokens = vim.split(flags_prompt, "%s")
   local custom_flags = default(opts.custom_flags, {})
   local flags = parse_flags {
     tokens = tokens,
