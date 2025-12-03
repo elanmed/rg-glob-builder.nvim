@@ -24,17 +24,17 @@ local function format_rg_flags(opts)
 
   local ext_tbl_processed = vim.tbl_map(function(ext)
     local formatted = ("%s*.%s"):format(exclude_symbol, ext)
-    return "-g " .. vim.fn.shellescape(formatted)
+    return vim.fn.shellescape "-g" .. " " .. vim.fn.shellescape(formatted)
   end, opts.ext_tbl)
 
   local dir_tbl_processed = vim.tbl_map(function(dir)
     local formatted = ("%s**/%s/**"):format(exclude_symbol, dir)
-    return "-g " .. vim.fn.shellescape(formatted)
+    return vim.fn.shellescape "-g" .. " " .. vim.fn.shellescape(formatted)
   end, opts.dir_tbl)
 
   local file_tbl_processed = vim.tbl_map(function(file)
     local formatted = ("%s%s"):format(exclude_symbol, file)
-    return "-g " .. vim.fn.shellescape(formatted)
+    return vim.fn.shellescape "-g" .. " " .. vim.fn.shellescape(formatted)
   end, opts.file_tbl)
 
   return vim.iter {

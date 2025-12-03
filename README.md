@@ -22,7 +22,7 @@ However, native `rg` arguments are clunky to type and difficult to order [correc
 
 ```lua
 require "rg-glob-builder".build "require -- -e rb !md"
--- returns: "--ignore-case -g '*.rb' -g !'*.md' -- 'require'"
+-- returns: "--ignore-case '-g' '*.rb' '-g' !'*.md' -- 'require'"
 -- transforms extensions as `*.[extension]`
 ```
 
@@ -30,14 +30,14 @@ require "rg-glob-builder".build "require -- -e rb !md"
 
 ```lua
 require "rg-glob-builder".build "require -- -f init.lua"
--- returns: "--ignore-case -g 'init.lua' -- 'require'"
+-- returns: "--ignore-case '-g' 'init.lua' -- 'require'"
 ```
 
 #### Searching in a directory
 
 ```lua
 require "rg-glob-builder".build "require -- -d plugins"
--- returns: "--ignore-case -g '**/plugins/**' -- 'require'"
+-- returns: "--ignore-case '-g' '**/plugins/**' -- 'require'"
 -- transforms directories as `**/[directory]/**`
 ```
 
@@ -45,7 +45,7 @@ require "rg-glob-builder".build "require -- -d plugins"
 
 ```lua
 require "rg-glob-builder".build "require -- -e rb -f init.lua -e lua"
--- returns: "--ignore-case -g 'init.lua' -g '*.rb' -g '*.lua' -- 'require'"
+-- returns: "--ignore-case '-g' 'init.lua' '-g' '*.rb' '-g' '*.lua' -- 'require'"
 ```
 
 #### Case-sensitive and whole-word searching
@@ -67,14 +67,14 @@ require "rg-glob-builder".build "require -- -c -w -nc -nw"
 
 ```lua
 require "rg-glob-builder".build "require -- -d plugin* -f !*.test.*"
--- returns: "--ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'"
+-- returns: "--ignore-case '-g' '**/plugin*/**' '-g' '!*.test.*' -- 'require'"
 ```
 
 #### Passing raw input
 
 ```lua
 require "rg-glob-builder".build "require -- -r -g plugin*"
--- returns: "--ignore-case -g 'plugin*' -- 'require'"
+-- returns: "--ignore-case '-g' 'plugin*' -- 'require'"
 ```
 
 ## Exports

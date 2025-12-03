@@ -44,19 +44,19 @@ end
 T["build"]["custom opts"]["extension"] = function()
   expect.equality(
     child.lua [[ return M.build("require -- --ext md !lua", { custom_flags = { extension = "--ext", }, })]],
-    [[--ignore-case -g '*.md' -g '!*.lua' -- 'require']]
+    [[--ignore-case '-g' '*.md' '-g' '!*.lua' -- 'require']]
   )
 end
 T["build"]["custom opts"]["file"] = function()
   expect.equality(
     child.lua [[ return M.build("require -- --file README.md !init.lua", { custom_flags = { file = "--file", }, })]],
-    [[--ignore-case -g 'README.md' -g '!init.lua' -- 'require']]
+    [[--ignore-case '-g' 'README.md' '-g' '!init.lua' -- 'require']]
   )
 end
 T["build"]["custom opts"]["directory"] = function()
   expect.equality(
     child.lua [[ return M.build("require -- --dir plugins !feature_*", { custom_flags = { directory = "--dir", }, })]],
-    [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
+    [[--ignore-case '-g' '**/plugins/**' '-g' '!**/feature_*/**' -- 'require']]
   )
 end
 
@@ -105,39 +105,39 @@ T["build"]["default opts"]["file"] = MiniTest.new_set()
 T["build"]["default opts"]["file"]["should include files"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -f init.lua"]],
-    [[--ignore-case -g 'init.lua' -- 'require']]
+    [[--ignore-case '-g' 'init.lua' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -f init.lua README.md *.test.*"]],
-    [[--ignore-case -g 'init.lua' -g 'README.md' -g '*.test.*' -- 'require']]
+    [[--ignore-case '-g' 'init.lua' '-g' 'README.md' '-g' '*.test.*' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -f init.lua -f README.md -f *.test.*"]],
-    [[--ignore-case -g 'init.lua' -g 'README.md' -g '*.test.*' -- 'require']]
+    [[--ignore-case '-g' 'init.lua' '-g' 'README.md' '-g' '*.test.*' -- 'require']]
   )
 end
 T["build"]["default opts"]["file"]["should exclude files"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -f !init.lua"]],
-    [[--ignore-case -g '!init.lua' -- 'require']]
+    [[--ignore-case '-g' '!init.lua' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -f !init.lua !README.md !*.test.*"]],
-    [[--ignore-case -g '!init.lua' -g '!README.md' -g '!*.test.*' -- 'require']]
+    [[--ignore-case '-g' '!init.lua' '-g' '!README.md' '-g' '!*.test.*' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -f !init.lua -f !README.md -f !*.test.*"]],
-    [[--ignore-case -g '!init.lua' -g '!README.md' -g '!*.test.*' -- 'require']]
+    [[--ignore-case '-g' '!init.lua' '-g' '!README.md' '-g' '!*.test.*' -- 'require']]
   )
 end
 T["build"]["default opts"]["file"]["should include and exclude files"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -f README.md !init.lua"]],
-    [[--ignore-case -g 'README.md' -g '!init.lua' -- 'require']]
+    [[--ignore-case '-g' 'README.md' '-g' '!init.lua' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -f README.md -f !init.lua"]],
-    [[--ignore-case -g 'README.md' -g '!init.lua' -- 'require']]
+    [[--ignore-case '-g' 'README.md' '-g' '!init.lua' -- 'require']]
   )
 end
 
@@ -145,39 +145,39 @@ T["build"]["default opts"]["extension"] = MiniTest.new_set()
 T["build"]["default opts"]["extension"]["should include extensions"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -e lua"]],
-    [[--ignore-case -g '*.lua' -- 'require']]
+    [[--ignore-case '-g' '*.lua' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -e lua rb md"]],
-    [[--ignore-case -g '*.lua' -g '*.rb' -g '*.md' -- 'require']]
+    [[--ignore-case '-g' '*.lua' '-g' '*.rb' '-g' '*.md' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -e lua -e rb -e md"]],
-    [[--ignore-case -g '*.lua' -g '*.rb' -g '*.md' -- 'require']]
+    [[--ignore-case '-g' '*.lua' '-g' '*.rb' '-g' '*.md' -- 'require']]
   )
 end
 T["build"]["default opts"]["extension"]["should exclude extensions"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -e !lua"]],
-    [[--ignore-case -g '!*.lua' -- 'require']]
+    [[--ignore-case '-g' '!*.lua' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -e !lua !rb !md"]],
-    [[--ignore-case -g '!*.lua' -g '!*.rb' -g '!*.md' -- 'require']]
+    [[--ignore-case '-g' '!*.lua' '-g' '!*.rb' '-g' '!*.md' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -e !lua -e !rb -e !md"]],
-    [[--ignore-case -g '!*.lua' -g '!*.rb' -g '!*.md' -- 'require']]
+    [[--ignore-case '-g' '!*.lua' '-g' '!*.rb' '-g' '!*.md' -- 'require']]
   )
 end
 T["build"]["default opts"]["extension"]["should include and exclude extensions"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -e md !lua"]],
-    [[--ignore-case -g '*.md' -g '!*.lua' -- 'require']]
+    [[--ignore-case '-g' '*.md' '-g' '!*.lua' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -e md -e !lua"]],
-    [[--ignore-case -g '*.md' -g '!*.lua' -- 'require']]
+    [[--ignore-case '-g' '*.md' '-g' '!*.lua' -- 'require']]
   )
 end
 
@@ -185,39 +185,39 @@ T["build"]["default opts"]["directory"] = MiniTest.new_set()
 T["build"]["default opts"]["directory"]["should include dirs"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -d plugins"]],
-    [[--ignore-case -g '**/plugins/**' -- 'require']]
+    [[--ignore-case '-g' '**/plugins/**' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -d plugins feature_*"]],
-    [[--ignore-case -g '**/plugins/**' -g '**/feature_*/**' -- 'require']]
+    [[--ignore-case '-g' '**/plugins/**' '-g' '**/feature_*/**' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -d plugins -d feature_*"]],
-    [[--ignore-case -g '**/plugins/**' -g '**/feature_*/**' -- 'require']]
+    [[--ignore-case '-g' '**/plugins/**' '-g' '**/feature_*/**' -- 'require']]
   )
 end
 T["build"]["default opts"]["directory"]["should exclude dirs"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -d !plugins"]],
-    [[--ignore-case -g '!**/plugins/**' -- 'require']]
+    [[--ignore-case '-g' '!**/plugins/**' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -d !plugins !feature_*"]],
-    [[--ignore-case -g '!**/plugins/**' -g '!**/feature_*/**' -- 'require']]
+    [[--ignore-case '-g' '!**/plugins/**' '-g' '!**/feature_*/**' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -d !plugins -d !feature_*"]],
-    [[--ignore-case -g '!**/plugins/**' -g '!**/feature_*/**' -- 'require']]
+    [[--ignore-case '-g' '!**/plugins/**' '-g' '!**/feature_*/**' -- 'require']]
   )
 end
 T["build"]["default opts"]["directory"]["should include and exclude dirs"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -d plugins !feature_*"]],
-    [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
+    [[--ignore-case '-g' '**/plugins/**' '-g' '!**/feature_*/**' -- 'require']]
   )
   expect.equality(
     child.lua [[ return M.build "require -- -d plugins -d !feature_*"]],
-    [[--ignore-case -g '**/plugins/**' -g '!**/feature_*/**' -- 'require']]
+    [[--ignore-case '-g' '**/plugins/**' '-g' '!**/feature_*/**' -- 'require']]
   )
 end
 
@@ -231,19 +231,19 @@ end
 T["build"]["default opts"]["raw input"]["as the first flag of many"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -r -g !feature_* -e lua"]],
-    [[--ignore-case '-g' '!feature_*' -g '*.lua' -- 'require']]
+    [[--ignore-case '-g' '!feature_*' '-g' '*.lua' -- 'require']]
   )
 end
 T["build"]["default opts"]["raw input"]["as the middle flag of many"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -e lua -r -g !feature_* -d plugins"]],
-    [[--ignore-case '-g' '!feature_*' -g '*.lua' -g '**/plugins/**' -- 'require']]
+    [[--ignore-case '-g' '!feature_*' '-g' '*.lua' '-g' '**/plugins/**' -- 'require']]
   )
 end
 T["build"]["default opts"]["raw input"]["as the last flag of many"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -e lua -d plugins -r -g !feature_*"]],
-    [[--ignore-case '-g' '!feature_*' -g '*.lua' -g '**/plugins/**' -- 'require']]
+    [[--ignore-case '-g' '!feature_*' '-g' '*.lua' '-g' '**/plugins/**' -- 'require']]
   )
 end
 
@@ -272,7 +272,7 @@ end
 T["kitchen sink"] = function()
   expect.equality(
     child.lua [[ return M.build "require -- -e rb md !lua -d plugins !feature_* -f !*.test.* *_spec.rb"]],
-    [[--ignore-case -g '*.rb' -g '*.md' -g '**/plugins/**' -g '*_spec.rb' -g '!*.lua' -g '!**/feature_*/**' -g '!*.test.*' -- 'require']]
+    [[--ignore-case '-g' '*.rb' '-g' '*.md' '-g' '**/plugins/**' '-g' '*_spec.rb' '-g' '!*.lua' '-g' '!**/feature_*/**' '-g' '!*.test.*' -- 'require']]
   )
 end
 

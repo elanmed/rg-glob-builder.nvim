@@ -1,4 +1,4 @@
-*rg-glob-builder.txt*                           Last change: 2025 September 28
+*rg-glob-builder.txt*                            Last change: 2025 December 02
 
 ==============================================================================
 Table of Contents                          *rg-glob-builder-table-of-contents*
@@ -58,7 +58,7 @@ SEARCHING BY EXTENSION                *rg-glob-builder-searching-by-extension*
 
 >lua
     require "rg-glob-builder".build "require -- -e rb !md"
-    -- returns: "--ignore-case -g '*.rb' -g !'*.md' -- 'require'"
+    -- returns: "--ignore-case '-g' '*.rb' '-g' !'*.md' -- 'require'"
     -- transforms extensions as `*.[extension]`
 <
 
@@ -67,7 +67,7 @@ SEARCHING BY FILE                          *rg-glob-builder-searching-by-file*
 
 >lua
     require "rg-glob-builder".build "require -- -f init.lua"
-    -- returns: "--ignore-case -g 'init.lua' -- 'require'"
+    -- returns: "--ignore-case '-g' 'init.lua' -- 'require'"
 <
 
                                                                               
@@ -75,7 +75,7 @@ SEARCHING IN A DIRECTORY            *rg-glob-builder-searching-in-a-directory*
 
 >lua
     require "rg-glob-builder".build "require -- -d plugins"
-    -- returns: "--ignore-case -g '**/plugins/**' -- 'require'"
+    -- returns: "--ignore-case '-g' '**/plugins/**' -- 'require'"
     -- transforms directories as `**/[directory]/**`
 <
 
@@ -84,7 +84,7 @@ MULTIPLE OF THE SAME FLAG IS SUPPORTED*rg-glob-builder-multiple-of-the-same-flag
 
 >lua
     require "rg-glob-builder".build "require -- -e rb -f init.lua -e lua"
-    -- returns: "--ignore-case -g 'init.lua' -g '*.rb' -g '*.lua' -- 'require'"
+    -- returns: "--ignore-case '-g' 'init.lua' '-g' '*.rb' '-g' '*.lua' -- 'require'"
 <
 
                                                                               
@@ -107,7 +107,7 @@ GLOBS ARE PASSED ALONG                *rg-glob-builder-globs-are-passed-along*
 
 >lua
     require "rg-glob-builder".build "require -- -d plugin* -f !*.test.*"
-    -- returns: "--ignore-case -g '**/plugin*/**' -g '!*.test.*' -- 'require'"
+    -- returns: "--ignore-case '-g' '**/plugin*/**' '-g' '!*.test.*' -- 'require'"
 <
 
                                                                               
@@ -115,7 +115,7 @@ PASSING RAW INPUT                          *rg-glob-builder-passing-raw-input*
 
 >lua
     require "rg-glob-builder".build "require -- -r -g plugin*"
-    -- returns: "--ignore-case -g 'plugin*' -- 'require'"
+    -- returns: "--ignore-case '-g' 'plugin*' -- 'require'"
 <
 
 ------------------------------------------------------------------------------
