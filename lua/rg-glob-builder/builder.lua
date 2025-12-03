@@ -23,13 +23,13 @@ end
 --- @class RecordFlagOpts
 --- @field flag_val string
 --- @field include_tbl table
---- @field negate_tbl table
+--- @field exclude_tbl table
 
 --- @param opts RecordFlagOpts
 local function record_flag(opts)
   if opts.flag_val:sub(1, 1) == "!" then
     if #opts.flag_val > 1 then
-      table.insert(opts.negate_tbl, opts.flag_val:sub(2))
+      table.insert(opts.exclude_tbl, opts.flag_val:sub(2))
     end
   else
     table.insert(opts.include_tbl, opts.flag_val)
@@ -58,11 +58,11 @@ local function construct_rg_flags(opts)
       :totable()
 
   if vim.tbl_count(file_ext_dir_tbl) > 0 then
-    local negate_symbol = opts.negate and "!" or ""
+    local exclude_symbol = opts.negate and "!" or ""
     local flag = ""
 
     for _, glob in ipairs(file_ext_dir_tbl) do
-      flag = flag .. "-g " .. vim.fn.shellescape(negate_symbol .. glob) .. " "
+      flag = flag .. "-g " .. vim.fn.shellescape(exclude_symbol .. glob) .. " "
     end
     return vim.trim(flag)
   end
@@ -85,11 +85,11 @@ local function parse_flags(opts)
   local state = nil
   local parsed = {
     include_file = {},
-    negate_file = {},
+    exclude_file = {},
     include_dir = {},
-    negate_dir = {},
+    exclude_dir = {},
     include_ext = {},
-    negate_ext = {},
+    exclude_ext = {},
     case_flag = { "--ignore-case", },
     word_flag = { nil, },
   }
@@ -121,11 +121,13 @@ local function parse_flags(opts)
     elseif token == extension_flag then
       state = "ext"
     elseif state then
-      record_flag {
-        flag_val = token,
-        include_tbl = parsed["include_" .. state],
-        negate_tbl = parsed["negate_" .. state],
-      }
+      if token:sub(1, 1) == "!" then
+        if #token > 1 then
+          table.insert(parsed["exclude_" .. state], token:sub(2))
+        end
+      else
+        table.insert(parsed["include_" .. state], token)
+      end
     end
   end
 
@@ -164,18 +166,18 @@ M.build = function(prompt, opts)
     ext_tbl = flags.include_ext,
   }
 
-  local negate_flag = construct_rg_flags {
+  local exclude_flag = construct_rg_flags {
     negate = true,
-    dir_tbl = flags.negate_dir,
-    file_tbl = flags.negate_file,
-    ext_tbl = flags.negate_ext,
+    dir_tbl = flags.exclude_dir,
+    file_tbl = flags.exclude_file,
+    ext_tbl = flags.exclude_ext,
   }
 
   local cmd = vim.iter {
     flags.case_flag,
     flags.word_flag,
     include_flag,
-    negate_flag,
+    exclude_flag,
     "--",
     search,
   }:flatten():totable()
