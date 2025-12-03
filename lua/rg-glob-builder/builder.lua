@@ -64,8 +64,8 @@ local function parse_flags(opts)
     include_ext = {},
     exclude_ext = {},
     raw_input = {},
-    case_flag = { "--ignore-case", },
-    word_flag = { nil, },
+    case_flag = "--ignore-case",
+    word_flag = nil,
   }
   local directory_flag = default(opts.directory_flag, "-d")
   local extension_flag = default(opts.extension_flag, "-e")
@@ -78,16 +78,16 @@ local function parse_flags(opts)
 
   for _, token in ipairs(opts.tokens) do
     if token == case_sensitive_flag then
-      parsed.case_flag = { "--case-sensitive", }
+      parsed.case_flag = "--case-sensitive"
       state = nil
     elseif token == ignore_case_flag then
-      parsed.case_flag = { "--ignore-case", }
+      parsed.case_flag = "--ignore-case"
       state = nil
     elseif token == whole_word_flag then
-      parsed.word_flag = { "--word-regexp", }
+      parsed.word_flag = "--word-regexp"
       state = nil
     elseif token == partial_word_flag then
-      parsed.word_flag = { nil, }
+      parsed.word_flag = nil
       state = nil
     elseif token == file_flag then
       state = "file"
@@ -159,9 +159,19 @@ M.build = function(prompt, opts)
     return vim.fn.shellescape(raw_input)
   end, flags.raw_input)
 
+  local case_flag_formatted = (function()
+    if flags.case_flag then return vim.fn.shellescape(flags.case_flag) end
+    return nil
+  end)()
+
+  local word_flag_formatted = (function()
+    if flags.word_flag then return vim.fn.shellescape(flags.word_flag) end
+    return nil
+  end)()
+
   local cmd = vim.iter {
-    flags.case_flag,
-    flags.word_flag,
+    case_flag_formatted,
+    word_flag_formatted,
     raw_input_formatted,
     include_flags_formatted,
     exclude_flags_formatted,
